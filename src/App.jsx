@@ -106,7 +106,7 @@ export default function App() {
 function Shell({ updatedAt, children }) {
   return (
     <>
-      <div className="wrap">
+      <div className="wrap wrap--head">
         <Masthead />
         <BadgersBanner />
       </div>

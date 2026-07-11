@@ -29,19 +29,30 @@ Live URLs once deployed:
 - Main: `https://rowanflynnpilot.github.io/wpr-badgers-tracker/`
 - Game card: `…/wpr-badgers-tracker/mini.html`
 - Standings card: `…/wpr-badgers-tracker/mini-standings.html`
+- Newsletter digest page: `…/wpr-badgers-tracker/mini-digest.html`
+- Newsletter image: `…/wpr-badgers-tracker/digest.png`
 
 ## Embed on WPR (WordPress Custom HTML block)
 
-Main tracker — auto-resizing, no inner scrollbar:
+All three embeds auto-resize (no inner scrollbar). Every listener checks
+`e.origin` and `e.source`, so multiple widgets on one page can't resize each
+other and no other frame can spoof a height message. The `height` attribute
+is just the placeholder before the first message arrives.
+
+Main tracker (`allow="clipboard-write"` lets the ☆ Bookmark → Copy link
+button work inside the cross-origin iframe):
 
 ```html
 <iframe id="wpr-badgers" title="Wisconsin Badgers tracker"
   src="https://rowanflynnpilot.github.io/wpr-badgers-tracker/"
-  style="width:100%;border:0;" height="900" loading="lazy"></iframe>
+  style="width:100%;border:0;" height="900" loading="lazy"
+  allow="clipboard-write"></iframe>
 <script>
   window.addEventListener('message', function (e) {
-    if (e.data && e.data.type === 'wpr-badgers-height') {
-      document.getElementById('wpr-badgers').style.height = e.data.height + 'px';
+    if (e.origin !== 'https://rowanflynnpilot.github.io') return;
+    var f = document.getElementById('wpr-badgers');
+    if (f && e.source === f.contentWindow && e.data && e.data.type === 'wpr-badgers-height') {
+      f.style.height = e.data.height + 'px';
     }
   });
 </script>
@@ -50,27 +61,79 @@ Main tracker — auto-resizing, no inner scrollbar:
 Mini game card (sidebar / in-article):
 
 ```html
-<iframe title="Badgers scoreboard"
+<iframe id="wpr-badgers-mini" title="Badgers scoreboard"
   src="https://rowanflynnpilot.github.io/wpr-badgers-tracker/mini.html"
   style="width:100%;max-width:340px;border:0;" height="210" loading="lazy"></iframe>
+<script>
+  window.addEventListener('message', function (e) {
+    if (e.origin !== 'https://rowanflynnpilot.github.io') return;
+    var f = document.getElementById('wpr-badgers-mini');
+    if (f && e.source === f.contentWindow && e.data && e.data.type === 'wpr-badgers-height') {
+      f.style.height = e.data.height + 'px';
+    }
+  });
+</script>
 ```
 
 Mini Big Ten standings:
 
 ```html
-<iframe title="Big Ten standings"
+<iframe id="wpr-badgers-standings" title="Big Ten standings"
   src="https://rowanflynnpilot.github.io/wpr-badgers-tracker/mini-standings.html"
   style="width:100%;max-width:340px;border:0;" height="330" loading="lazy"></iframe>
+<script>
+  window.addEventListener('message', function (e) {
+    if (e.origin !== 'https://rowanflynnpilot.github.io') return;
+    var f = document.getElementById('wpr-badgers-standings');
+    if (f && e.source === f.contentWindow && e.data && e.data.type === 'wpr-badgers-height') {
+      f.style.height = e.data.height + 'px';
+    }
+  });
+</script>
 ```
 
 Add `?to=https://…` to either mini's `src` to change where a tap lands
 (defaults to the canonical WPR Badgers page in `src/config.js`).
 
+## Newsletter image (digest.png)
+
+Email can't run the live widget, so CI screenshots `mini-digest.html` to
+`digest.png` on every deploy **and** Friday (preview) + Sunday (recap)
+mornings during the season (Aug–Jan). Drop it into the newsletter as a
+linked image — the image has no CTA of its own, so keep the text link:
+
+```html
+<a href="https://wausaupilotandreview.com/wisconsin-badgers/">
+  <img src="https://rowanflynnpilot.github.io/wpr-badgers-tracker/digest.png"
+    width="420" alt="Badgers digest: next game, last result, Big Ten standings"
+    style="width:100%;max-width:420px;border:0;">
+</a>
+<p><a href="https://wausaupilotandreview.com/wisconsin-badgers/">Full Badgers tracker →</a></p>
+```
+
+Note the image URL is stable but email clients cache aggressively; if a
+send needs a guaranteed-fresh image, append a date query
+(`digest.png?d=2026-09-04`).
+
 ## Configure
 
-Everything lives in `src/config.js`: season, sponsor lines, canonical URL,
-the WPR newsroom category id (lights up a "From the newsroom" section), and
-the opt-in Plausible domain (no external analytics script loads unless set).
+Everything lives in `src/config.js`: season, sponsor slots, canonical URL,
+the WPR newsroom category id (lights the "From the newsroom" section), and
+the opt-in Plausible domain (no external analytics script loads unless set —
+set `ANALYTICS.domain` once a Plausible account exists and tab/bookmark/
+sponsor/mini-click events start counting immediately).
+
+Sponsor slots take an object, not a string:
+
+```js
+TITLE_SPONSOR: { text: 'Presented by …', href: 'https://…', logo: 'https://…/mark.png' }
+```
+
+`text` is required; `href` makes the slot tappable (new tab,
+`rel="sponsored"`, click tracked per placement); `logo` adds a small mark.
+`null` hides a slot. The minis render text/logo only — the whole card is
+already one link. The social share card is `public/og.png`; regenerate it
+after a branding change with `node scripts/og-card.mjs`.
 
 ## A note on trademarks
 

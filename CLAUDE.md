@@ -5,8 +5,10 @@
 A live **Wisconsin Badgers football tracker** for Wausau Pilot & Review
 (WPR), the sibling of `wpr-brewers-tracker`. React/Vite single-page widget
 deployed to GitHub Pages and embedded on WPR via iframe. Three tabs
-(**Season / Schedule / Team**) plus two compact single-purpose embeds
-(`mini.html` featured-game card, `mini-standings.html` Big Ten table).
+(**Season / Schedule / Team**), two compact single-purpose embeds
+(`mini.html` featured-game card, `mini-standings.html` Big Ten table), and
+a newsletter render target (`mini-digest.html`, screenshotted to
+`digest.png` in CI for the email — an image bake, NOT a data cron).
 
 ## This repo deliberately breaks the standard WPR pattern
 
@@ -25,12 +27,20 @@ src/config.js     ← the ONLY place season/team/sponsor/analytics live
 src/App.jsx       ← shared fetches (schedule/standings/AP poll), tabs, chrome
 src/components/   ← one component per section; fail-soft sections own
                     their empty state and render nothing on error
+                    (Sponsor.jsx renders every sponsor slot — see config.js)
 mini.html         ← featured-game card (whole card = one link)
 mini-standings.html ← Big Ten top 8, Wisconsin pinned if outside the cut
+mini-digest.html  ← newsletter card (next / last / Big Ten); ?image=1 drops
+                    the CTA for the email screenshot
+scripts/          ← render-digest.mjs (CI → dist/digest.png) and
+                    og-card.mjs (one-time public/og.png social card)
+public/og.png     ← committed og:image; regenerate via scripts/og-card.mjs
 ```
 
-Vite builds three entries (see `vite.config.js`). `base` is
-`/wpr-badgers-tracker/` — change it if the repo is renamed.
+Vite builds four entries (see `vite.config.js`). `base` is
+`/wpr-badgers-tracker/` — change it if the repo is renamed. Sponsor slots
+are objects (`{ text, href, logo }`, `null` hides) rendered only through
+`Sponsor.jsx`; minis get `linkless` because each mini is already one `<a>`.
 
 ## ESPN data notes (hard-won, do not rediscover)
 
@@ -79,10 +89,17 @@ Vite builds three entries (see `vite.config.js`). `base` is
 
 ## Live behavior
 
-The app and the mini game card **poll every 60s** (schedule memoized 30s in
-`api.js`) — that's what makes live scores move without a refresh. A failed
-poll keeps the last good data; the error screen appears only if the *first*
-load fails. Don't "optimize" the polling away.
+The app and both mini cards **poll every 60s** (schedule memoized 30s in
+`api.js`) — that's what makes live scores and Saturday standings move
+without a refresh. A failed poll keeps the last good data; the error screen
+appears only if the *first* load fails. Don't "optimize" the polling away.
+
+All embeds autosize by posting `{ type: 'wpr-badgers-height' }` upward.
+The height posted is `documentElement.offsetHeight`, NOT `scrollHeight` —
+the root's scrollHeight floors at the viewport, so a scrollHeight-based
+iframe could grow but never shrink back (Team tab → Season tab would leave
+a screen of dead space). The README host snippets check `e.origin` and
+`e.source` so multiple widgets on one page can't resize each other.
 
 ## Offseason behavior (launching in July is the point)
 
@@ -98,6 +115,8 @@ Sections self-heal as data appears; nothing needs redeploying in September:
 | Latest game     | absent                            | scoring plays + win-prob chart |
 | Leaders         | absent (endpoint 404s)            | six leader cards   |
 | Roster          | **always present** — Team tab anchor | same           |
+| Newsroom        | **always present** — live WPR posts (category 567084996) | same |
+| Digest image    | next-game card                    | + last game, Big Ten table |
 
 ## Design
 
@@ -136,9 +155,12 @@ paid sponsor to this widget, confirm comfort level (or set
 
 ## Possible next features (deliberately not built)
 
-- Weekly digest PNG for Devon's newsletter — copy `render-digest.mjs` +
-  the digest workflow from `wpr-brewers-tracker`, restyle, cron Fri (preview)
-  + Sun (recap) during the season only.
 - Reader pick'em (Supabase) — natural sponsor product, real build.
 - Recruiting/transfer tracker — no clean public API; would need a scraper,
   which changes the architecture. Decide deliberately.
+- Plausible analytics: the instrumentation (tabs, bookmark, mini + sponsor
+  clicks) is already wired; it goes live the moment `ANALYTICS.domain` is
+  set in config — needs a Plausible account first (WPR's call).
+
+(The weekly digest PNG was on this list and is now built — ported July 2026
+from `wpr-brewers-tracker`: Fri preview + Sun recap crons, Aug–Jan only.)

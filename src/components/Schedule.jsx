@@ -2,6 +2,7 @@ import React from 'react'
 import { CONFIG } from '../config.js'
 import { gameDate, gameTime, periodLabel } from '../format.js'
 import Section from './Section.jsx'
+import Sponsor from './Sponsor.jsx'
 
 function when(game) {
   const date = gameDate(game, { month: 'short', day: 'numeric' })
@@ -64,11 +65,11 @@ export default function Schedule({ games, bigTenIds }) {
           </div>
         ))}
       </div>
-      {CONFIG.SCHEDULE_SPONSOR && (
-        <p className="section__sub" style={{ marginTop: 12 }}>
-          {CONFIG.SCHEDULE_SPONSOR}
-        </p>
-      )}
+      <Sponsor
+        slot={CONFIG.SCHEDULE_SPONSOR}
+        placement="schedule"
+        className="sponsorband"
+      />
     </Section>
   )
 }

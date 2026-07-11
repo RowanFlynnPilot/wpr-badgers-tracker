@@ -1,9 +1,22 @@
 name: Deploy to GitHub Pages
 
+# Build + publish. The widget itself has NO scraper and NO data cron — it
+# fetches ESPN directly in the browser. The scheduled runs below exist only
+# to regenerate the EMAIL image (digest.png): email can't run the live
+# widget, so it's snapshotted to a PNG for the newsletter. This bakes an
+# image, not a data cache — see scripts/render-digest.mjs.
+
 on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    # Newsletter image refresh: Friday (game preview) and Sunday (recap)
+    # mornings, in-season months only (Aug–Dec + January bowls/CFP).
+    # 11:30 UTC ≈ 6:30 AM Central during CDT, 5:30 AM during CST — cron is
+    # UTC and ignores DST — ahead of the morning sends either way.
+    - cron: '30 11 * 8-12,1 FRI'
+    - cron: '30 11 * 8-12,1 SUN'
 
 permissions:
   contents: read
@@ -25,6 +38,18 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      # Render the digest widget to dist/digest.png for the email newsletter
+      # (see header note).
+      - run: npx playwright install --with-deps chromium
+      - name: Render digest email image
+        run: |
+          npm run preview -- --port 4173 --host 127.0.0.1 &
+          for i in $(seq 1 30); do
+            curl -sf http://127.0.0.1:4173/wpr-badgers-tracker/mini-digest.html > /dev/null && break
+            sleep 1
+          done
+          node scripts/render-digest.mjs http://127.0.0.1:4173/wpr-badgers-tracker/mini-digest.html dist/digest.png
+      - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
@@ -36,5 +61,8 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      # NOTE: deploy-pages hard-caps its queue wait at 10 minutes. If the
+      # Pages queue stalls, re-run the deploy job — the in-season schedule
+      # also self-heals it on the next tick.
       - id: deployment
         uses: actions/deploy-pages@v4

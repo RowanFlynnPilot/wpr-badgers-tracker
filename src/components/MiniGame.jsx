@@ -4,6 +4,7 @@ import { fetchSchedule } from '../api.js'
 import { destination } from '../embed.js'
 import { track } from '../analytics.js'
 import { gameDate, gameTime, periodLabel } from '../format.js'
+import Sponsor from './Sponsor.jsx'
 
 // Compact featured-game card. The whole card is a real link (target="_top")
 // into the full tracker or wherever `?to=` points — middle-click,
@@ -76,6 +77,12 @@ export default function MiniGame() {
         {game.tv && ` · ${game.tv}`}
       </div>
       <div className="mini__cta">Full Badgers tracker →</div>
+      <Sponsor
+        slot={CONFIG.MINI_SPONSOR}
+        placement="mini-scoreboard"
+        className="mini__sponsor"
+        linkless
+      />
     </a>
   )
 }

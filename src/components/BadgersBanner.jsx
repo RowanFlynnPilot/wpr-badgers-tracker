@@ -1,5 +1,6 @@
 import React from 'react'
 import { CONFIG } from '../config.js'
+import Sponsor from './Sponsor.jsx'
 
 export default function BadgersBanner() {
   return (
@@ -13,9 +14,11 @@ export default function BadgersBanner() {
         </div>
         <h1 className="banner__title">The Badgers, by the numbers</h1>
       </div>
-      {CONFIG.TITLE_SPONSOR && (
-        <div className="banner__sponsor">{CONFIG.TITLE_SPONSOR}</div>
-      )}
+      <Sponsor
+        slot={CONFIG.TITLE_SPONSOR}
+        placement="banner"
+        className="banner__sponsor"
+      />
     </div>
   )
 }

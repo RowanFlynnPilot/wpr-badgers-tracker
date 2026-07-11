@@ -8,6 +8,10 @@ import { track } from '../analytics.js'
 export default function BookmarkButton() {
   const [open, setOpen] = useState(false)
   const [copied, setCopied] = useState(false)
+  // Cross-origin iframes block the clipboard API unless the host <iframe>
+  // delegates it (allow="clipboard-write" — in the README snippet). When it
+  // still fails, fall back to a select-and-copy field.
+  const [manual, setManual] = useState(false)
   const isMac =
     typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform)
 
@@ -18,10 +22,14 @@ export default function BookmarkButton() {
   }
 
   const copy = async () => {
-    await navigator.clipboard.writeText(CONFIG.CANONICAL_URL)
-    setCopied(true)
+    try {
+      await navigator.clipboard.writeText(CONFIG.CANONICAL_URL)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1600)
+    } catch {
+      setManual(true)
+    }
     track('Bookmark', { action: 'copy' })
-    setTimeout(() => setCopied(false), 1600)
   }
 
   return (
@@ -35,9 +43,19 @@ export default function BookmarkButton() {
             Press <kbd>{isMac ? '⌘' : 'Ctrl'}</kbd> + <kbd>D</kbd> to bookmark
             this page, or grab the link:
           </div>
-          <button className="bookmark__copy" onClick={copy}>
-            {copied ? 'Copied ✓' : 'Copy link'}
-          </button>
+          {manual ? (
+            <input
+              className="bookmark__url"
+              readOnly
+              value={CONFIG.CANONICAL_URL}
+              onFocus={(e) => e.target.select()}
+              aria-label="Link to the Badgers page — select and copy"
+            />
+          ) : (
+            <button className="bookmark__copy" onClick={copy}>
+              {copied ? 'Copied ✓' : 'Copy link'}
+            </button>
+          )}
         </div>
       )}
     </div>

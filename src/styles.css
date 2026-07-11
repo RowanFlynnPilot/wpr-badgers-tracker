@@ -39,6 +39,12 @@ body {
   padding: 0 16px 40px;
 }
 
+/* The header wrap ends at the banner so the bleacher stripe sits flush
+   under it — one band, not a detached divider. */
+.wrap--head {
+  padding-bottom: 0;
+}
+
 /* ------------------------------------------------------------- masthead */
 .masthead {
   display: flex;
@@ -76,6 +82,7 @@ body {
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-wrap: wrap; /* lets the sponsor slot drop to its own row on phones */
 }
 
 .banner__logo {
@@ -103,9 +110,47 @@ body {
 
 .banner__sponsor {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 12px;
   opacity: 0.9;
-  text-align: right;
+  color: var(--white); /* also an <a> when the slot has an href */
+  text-decoration: none;
+}
+
+.banner__sponsor img {
+  height: 22px;
+  width: auto;
+  display: block;
+}
+
+a.banner__sponsor:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+/* Sponsor band under the Schedule slate. */
+.sponsorband {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.sponsorband img {
+  height: 20px;
+  width: auto;
+}
+
+a.sponsorband:hover {
+  color: var(--cardinal);
 }
 
 /* Camp Randall bleacher stripe — the signature motif. */
@@ -295,6 +340,12 @@ body {
 }
 
 /* ----------------------------------------------------------------- table */
+/* Wide tables (roster, standings) scroll inside this on narrow screens
+   instead of forcing a horizontal scrollbar on the whole embed. */
+.tablewrap {
+  overflow-x: auto;
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -511,6 +562,12 @@ body {
   border-top: 1.5px solid var(--ink);
 }
 
+/* Homegrown players — the local-paper angle. */
+.hometown--wi {
+  color: var(--cardinal);
+  font-weight: 600;
+}
+
 /* ------------------------------------------------------------- last game */
 .scoring {
   display: grid;
@@ -615,6 +672,18 @@ body {
   cursor: pointer;
 }
 
+.bookmark__url {
+  margin-top: 10px;
+  width: 100%;
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 7px 8px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--ink);
+  background: var(--cream);
+}
+
 /* ---------------------------------------------------------------- footer */
 .footer {
   margin-top: 44px;
@@ -657,7 +726,10 @@ body {
     grid-column: 1 / -1;
   }
 
+  /* Never hide the sponsor on phones — most readers are on phones.
+     It drops to its own full-width row inside the banner instead. */
   .banner__sponsor {
-    display: none;
+    flex-basis: 100%;
+    margin-left: 0;
   }
 }

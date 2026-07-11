@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { CONFIG } from '../config.js'
 import { fetchStandings } from '../api.js'
 import { destination } from '../embed.js'
 import { track } from '../analytics.js'
+import Sponsor from './Sponsor.jsx'
 
 const SHOW = 8
 
@@ -11,9 +12,24 @@ const SHOW = 8
 export default function MiniStandings() {
   const [entries, setEntries] = useState(null)
   const [failed, setFailed] = useState(false)
+  const hasData = useRef(false)
 
   useEffect(() => {
-    fetchStandings().then(setEntries).catch(() => setFailed(true))
+    // Poll like the game card: records shift as Saturday finals land, and
+    // this widget sits on long-lived article pages. A failed refresh keeps
+    // the last good table.
+    const load = () =>
+      fetchStandings()
+        .then((rows) => {
+          hasData.current = true
+          setEntries(rows)
+        })
+        .catch(() => {
+          if (!hasData.current) setFailed(true)
+        })
+    load()
+    const id = setInterval(load, 60_000)
+    return () => clearInterval(id)
   }, [])
 
   if (failed) return null
@@ -64,6 +80,12 @@ export default function MiniStandings() {
         </table>
       )}
       <div className="mini__cta">Full Badgers tracker →</div>
+      <Sponsor
+        slot={CONFIG.MINI_SPONSOR}
+        placement="mini-standings"
+        className="mini__sponsor"
+        linkless
+      />
     </a>
   )
 }

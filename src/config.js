@@ -24,15 +24,24 @@ export const CONFIG = {
   // Where the bookmark/copy-link and the minis send readers.
   CANONICAL_URL: 'https://wausaupilotandreview.com/wisconsin-badgers/',
 
-  // Sponsorship strings. Empty string hides the slot.
-  TITLE_SPONSOR: '', // e.g. 'Presented by …'
-  SCHEDULE_SPONSOR: '', // band inside the Schedule tab
+  // Sponsorship slots. null hides a slot entirely. Each slot is an object:
+  //   { text: 'Presented by …',        required — the visible line
+  //     href: 'https://sponsor.com',   optional — makes the slot tappable
+  //                                    (new tab, rel=sponsored, click tracked)
+  //     logo: 'https://…/mark.png' }   optional — small mark beside the text
+  // The minis show text/logo only (never a link): the whole mini card is
+  // already one <a>, and nested links are invalid HTML.
+  TITLE_SPONSOR: null, // banner slot, visible on every tab (wraps below the
+  // title on phones — never hidden on mobile; sponsors pay for those eyes)
+  SCHEDULE_SPONSOR: null, // band under the Schedule tab's slate
+  MINI_SPONSOR: null, // one quiet line at the foot of both mini cards
 
-  // WPR newsroom feed (WordPress REST). Set CATEGORY_ID to the WP category
-  // id for Badgers coverage to light the section up; null hides it.
+  // WPR newsroom feed (WordPress REST). CATEGORY_ID is WPR's
+  // "Wisconsin Badgers Football" category (verified July 2026 via
+  // /wp-json/wp/v2/categories?search=badgers); null hides the section.
   WPR_NEWS: {
     endpoint: 'https://wausaupilotandreview.com/wp-json/wp/v2/posts',
-    CATEGORY_ID: null,
+    CATEGORY_ID: 567084996,
     count: 4,
   },
 

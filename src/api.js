@@ -176,14 +176,20 @@ const LEADER_CATEGORIES = {
   ],
 }
 
+// One fetch of the leaders document serves both groups — offense and
+// defense are slices of the same payload.
+function fetchLeadersDoc() {
+  return cached('leaders-doc', 300_000, () =>
+    getJSON(`${CORE}/seasons/${CONFIG.SEASON}/types/2/teams/${CONFIG.TEAM_ID}/leaders`),
+  )
+}
+
 // Core-API leaders reference athletes by $ref; resolve the top leader per
 // category in parallel. 404s until the season's first stats exist — callers
 // fail soft.
 export function fetchLeaders(group) {
   return cached(`leaders:${group}`, 300_000, async () => {
-    const data = await getJSON(
-      `${CORE}/seasons/${CONFIG.SEASON}/types/2/teams/${CONFIG.TEAM_ID}/leaders`,
-    )
+    const data = await fetchLeadersDoc()
     const wanted = LEADER_CATEGORIES[group]
     const rows = wanted
       .map(([key, label]) => {

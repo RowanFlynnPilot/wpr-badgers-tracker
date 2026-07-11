@@ -23,7 +23,7 @@ export default function LastGame({ games }) {
     <Section
       title="Latest game"
       sub={`${last.won ? 'W' : 'L'} ${last.us.score}–${last.them.score} ${
-        weWereHome ? 'vs' : 'at'
+        weWereHome || last.neutralSite ? 'vs' : 'at'
       } ${last.them.name}`}
     >
       {plays.length > 0 && (

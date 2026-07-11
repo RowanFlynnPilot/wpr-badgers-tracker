@@ -86,7 +86,11 @@ export default function Hero({ schedule, ourRank }) {
         <div className="hero__count">{countdown(next)}</div>
         <div className="hero__matchup">
           <TeamChip team={{ ...next.us, rank: ourRank || next.us.rank }} />
-          <span className="hero__vs">{next.homeAway === 'home' ? 'VS' : 'AT'}</span>
+          {/* Neutral sites read VS: "AT Notre Dame" is wrong-footed when the
+              game is at Lambeau Field — the kicker line names the venue. */}
+          <span className="hero__vs">
+            {next.homeAway === 'home' || next.neutralSite ? 'VS' : 'AT'}
+          </span>
           <TeamChip team={next.them} />
         </div>
         <div className="hero__meta">
@@ -97,7 +101,8 @@ export default function Hero({ schedule, ourRank }) {
         {last && (
           <div className="hero__meta" style={{ marginTop: 10 }}>
             Last time out: {last.won ? 'W' : 'L'} {last.us.score}–{last.them.score}{' '}
-            {last.homeAway === 'home' ? 'vs' : 'at'} {last.them.short}
+            {last.homeAway === 'home' || last.neutralSite ? 'vs' : 'at'}{' '}
+            {last.them.short}
           </div>
         )}
       </div>
@@ -115,7 +120,8 @@ export default function Hero({ schedule, ourRank }) {
         </div>
         <div className="hero__meta">
           Final game: {last.won ? 'W' : 'L'} {last.us.score}–{last.them.score}{' '}
-          {last.homeAway === 'home' ? 'vs' : 'at'} {last.them.short}
+          {last.homeAway === 'home' || last.neutralSite ? 'vs' : 'at'}{' '}
+          {last.them.short}
           {last.note && ` · ${last.note}`}
         </div>
       </div>
