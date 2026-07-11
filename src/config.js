@@ -21,6 +21,15 @@ export const CONFIG = {
   TIMEZONE: 'America/Chicago',
   TIMEZONE_LABEL: 'CT',
 
+  // Trophy games, keyed by ESPN opponent id. Editorial constants — facts
+  // about the rivalry, not data that can go stale. Tagged in the schedule
+  // and used by the Storylines section (Minnesota is the Axe game).
+  RIVALRIES: {
+    135: "Paul Bunyan's Axe", // Minnesota
+    2294: 'Heartland Trophy', // Iowa
+    158: 'Freedom Trophy', // Nebraska
+  },
+
   // Where the bookmark/copy-link and the minis send readers.
   CANONICAL_URL: 'https://wausaupilotandreview.com/wisconsin-badgers/',
 

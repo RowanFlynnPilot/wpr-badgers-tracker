@@ -22,12 +22,19 @@ game states stale. Do not "fix" this by adding one.
 ## Architecture
 
 ```
-src/api.js        ← the ONLY file that talks to ESPN (fail-fast, memoized)
-src/config.js     ← the ONLY place season/team/sponsor/analytics live
+src/api.js        ← the ONLY file that talks to ESPN + WPR's WP REST
+                    (fail-fast, memoized; wpText() renders WP HTML to text)
+src/config.js     ← the ONLY place season/team/sponsor/analytics/rivalry live
 src/App.jsx       ← shared fetches (schedule/standings/AP poll), tabs, chrome
+src/ics.js        ← .ics builder for the "+ Calendar" download (TBD games
+                    become all-day entries on the Eastern-recovered date)
 src/components/   ← one component per section; fail-soft sections own
                     their empty state and render nothing on error
-                    (Sponsor.jsx renders every sponsor slot — see config.js)
+                    (Sponsor.jsx renders every sponsor slot — see config.js;
+                    Storylines.jsx auto-writes cards from the live feeds —
+                    preseason set vs season-so-far set, first 4 that resolve;
+                    SeasonStrip.jsx is the 12-logo result ribbon;
+                    Coverage.jsx renders WPR posts as photo cards)
 mini.html         ← featured-game card (whole card = one link)
 mini-standings.html ← Big Ten top 8, Wisconsin pinned if outside the cut
 mini-digest.html  ← newsletter card (next / last / Big Ten); ?image=1 drops
@@ -108,6 +115,8 @@ Sections self-heal as data appears; nothing needs redeploying in September:
 | Section         | Preseason                         | In season          |
 | --------------- | --------------------------------- | ------------------ |
 | Hero            | Kickoff countdown (live minutes)  | Live score / next  |
+| Season strip    | 12 logos on neutral rules         | W green / L red / live cardinal |
+| Storylines      | opener · last season · homegrown · slate (+ranked tests once the poll drops) | bowl watch · the race · the Axe · road ahead (+postseason when earned) |
 | Season pulse    | absent                            | record, PF/PA, streak |
 | Big Ten table   | absent (all-0–0 table says nothing) | full table       |
 | AP Top 25       | absent (stale-poll refusal)       | poll + "on the slate" tags |
@@ -115,8 +124,13 @@ Sections self-heal as data appears; nothing needs redeploying in September:
 | Latest game     | absent                            | scoring plays + win-prob chart |
 | Leaders         | absent (endpoint 404s)            | six leader cards   |
 | Roster          | **always present** — Team tab anchor | same           |
-| Newsroom        | **always present** — live WPR posts (category 567084996) | same |
+| Newsroom        | **always present** — WPR photo cards (category 567084996) | same |
 | Digest image    | next-game card                    | + last game, Big Ten table |
+
+Storylines never needs editorial upkeep: every card is computed from live
+feeds (schedule, prior-season schedule, standings, poll, roster). The Axe
+card even knows who holds it (last Minnesota result). Trophy games are the
+one editorial constant — `CONFIG.RIVALRIES`, facts that don't go stale.
 
 ## Design
 
@@ -158,9 +172,10 @@ paid sponsor to this widget, confirm comfort level (or set
 - Reader pick'em (Supabase) — natural sponsor product, real build.
 - Recruiting/transfer tracker — no clean public API; would need a scraper,
   which changes the architecture. Decide deliberately.
-- Plausible analytics: the instrumentation (tabs, bookmark, mini + sponsor
-  clicks) is already wired; it goes live the moment `ANALYTICS.domain` is
-  set in config — needs a Plausible account first (WPR's call).
+- Plausible analytics: the instrumentation (tabs, bookmark, calendar,
+  coverage + mini + sponsor clicks) is already wired; it goes live the
+  moment `ANALYTICS.domain` is set in config — needs a Plausible account
+  first (WPR's call).
 
 (The weekly digest PNG was on this list and is now built — ported July 2026
 from `wpr-brewers-tracker`: Fri preview + Sun recap crons, Aug–Jan only.)

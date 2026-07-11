@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { fetchWprCoverage } from '../api.js'
+import { track } from '../analytics.js'
 import Section from './Section.jsx'
 
-// Live read of WPR's WordPress REST API. Renders nothing until
-// CONFIG.WPR_NEWS.CATEGORY_ID is set, and nothing on error.
+// Live read of WPR's WordPress REST API — headline, featured photo and
+// excerpt per story. Renders nothing until CONFIG.WPR_NEWS.CATEGORY_ID is
+// set, and nothing on error.
 export default function Coverage() {
   const [posts, setPosts] = useState(null)
 
@@ -14,11 +16,34 @@ export default function Coverage() {
   if (!posts || !posts.length) return null
 
   return (
-    <Section title="From the newsroom" sub="Recent Badgers coverage on Wausau Pilot & Review.">
-      <div className="newslist">
+    <Section
+      title="From the newsroom"
+      sub="Recent Badgers coverage on Wausau Pilot & Review."
+    >
+      <div className="newsgrid">
         {posts.map((post) => (
-          <a key={post.id} href={post.link} target="_top">
-            <span dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
+          <a
+            key={post.id}
+            className="newscard"
+            href={post.link}
+            target="_top"
+            onClick={() => track('Coverage Click')}
+          >
+            {/* Eager on purpose: four ~11 KB thumbnails aren't worth the
+                lazy-load edge cases. */}
+            {post.image && (
+              <img className="newscard__img" src={post.image} alt={post.imageAlt} />
+            )}
+            <div className="newscard__body">
+              <div className="newscard__date">
+                {post.date.toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                })}
+              </div>
+              <div className="newscard__title">{post.title}</div>
+              {post.excerpt && <p className="newscard__excerpt">{post.excerpt}</p>}
+            </div>
           </a>
         ))}
       </div>

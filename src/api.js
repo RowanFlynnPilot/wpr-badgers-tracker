@@ -31,15 +31,25 @@ function cached(key, ttlMs, fn) {
 // without it ESPN serves the empty preseason bucket. `seasontype=3`
 // (postseason: conference title berths land as bowls/CFP here) returns a
 // clean empty list until earned, so both are fetched and merged.
-export function fetchSchedule() {
-  return cached('schedule', 30_000, async () => {
+function fetchSeasonSchedule(key, season, ttlMs) {
+  return cached(key, ttlMs, async () => {
     const url = (type) =>
-      `${SITE}/teams/${CONFIG.TEAM_ID}/schedule?season=${CONFIG.SEASON}&seasontype=${type}`
+      `${SITE}/teams/${CONFIG.TEAM_ID}/schedule?season=${season}&seasontype=${type}`
     const [regular, post] = await Promise.all([getJSON(url(2)), getJSON(url(3))])
     return [...regular.events, ...post.events]
       .map(normalizeEvent)
       .sort((a, b) => a.date - b.date)
   })
+}
+
+export function fetchSchedule() {
+  return fetchSeasonSchedule('schedule', CONFIG.SEASON, 30_000)
+}
+
+// Last season's results power the "Last season" and Axe-holder storylines;
+// ESPN serves prior seasons year-round. Long TTL — history doesn't move.
+export function fetchPriorSchedule() {
+  return fetchSeasonSchedule('prior-schedule', CONFIG.SEASON - 1, 3_600_000)
 }
 
 function normalizeEvent(event) {
@@ -257,14 +267,44 @@ export function fetchRoster() {
 
 // ------------------------------------------------------------ WPR newsroom
 
+// WordPress serves titles/excerpts as HTML (entities, tags) — render to
+// plain text once, here, so components never touch markup.
+function wpText(html) {
+  return new DOMParser().parseFromString(html || '', 'text/html').body.textContent.trim()
+}
+
 // Live read of WPR's own CMS (WordPress REST), NOT a scraper. Keyless,
-// CORS-open, `_fields`-trimmed. Hidden entirely when CATEGORY_ID is null.
+// CORS-open. `_embed=wp:featuredmedia` rides along so each card gets the
+// article's photo without a second request; WPR is a Newspack site, so the
+// pre-cropped `medium` rendition keeps thumbnails light. Hidden entirely
+// when CATEGORY_ID is null.
 export function fetchWprCoverage() {
   const { endpoint, CATEGORY_ID, count } = CONFIG.WPR_NEWS
   if (!CATEGORY_ID) return Promise.reject(new Error('WPR_NEWS.CATEGORY_ID not set'))
-  return cached('wpr-news', 300_000, () =>
-    getJSON(
-      `${endpoint}?categories=${CATEGORY_ID}&per_page=${count}&_fields=id,link,title,date`,
-    ),
-  )
+  return cached('wpr-news', 300_000, async () => {
+    const posts = await getJSON(
+      `${endpoint}?categories=${CATEGORY_ID}&per_page=${count}&_embed=wp:featuredmedia&_fields=id,link,title,date,excerpt,_links,_embedded`,
+    )
+    return posts.map((post) => {
+      const media =
+        post._embedded && post._embedded['wp:featuredmedia']
+          ? post._embedded['wp:featuredmedia'][0]
+          : null
+      const sizes = media && media.media_details ? media.media_details.sizes : null
+      return {
+        id: post.id,
+        link: post.link,
+        date: new Date(post.date),
+        title: wpText(post.title ? post.title.rendered : ''),
+        excerpt: wpText(post.excerpt ? post.excerpt.rendered : ''),
+        image:
+          sizes && sizes.medium && sizes.medium.source_url
+            ? sizes.medium.source_url
+            : media && media.source_url
+              ? media.source_url
+              : null,
+        imageAlt: media && media.alt_text ? media.alt_text : '',
+      }
+    })
+  })
 }

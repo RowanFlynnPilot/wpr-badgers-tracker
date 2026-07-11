@@ -39,6 +39,11 @@ export default function Schedule({ games, bigTenIds }) {
                     <span className="tag">B1G</span>
                   )}
                   {game.neutralSite && <span className="tag">Neutral</span>}
+                  {CONFIG.RIVALRIES[game.them.id] && (
+                    <span className="tag tag--trophy">
+                      {CONFIG.RIVALRIES[game.them.id]}
+                    </span>
+                  )}
                 </div>
                 <div className="game__venue">
                   {game.note ||

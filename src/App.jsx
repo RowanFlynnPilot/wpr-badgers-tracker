@@ -6,7 +6,10 @@ import Masthead from './components/Masthead.jsx'
 import BadgersBanner from './components/BadgersBanner.jsx'
 import TabBar from './components/TabBar.jsx'
 import BookmarkButton from './components/BookmarkButton.jsx'
+import CalendarButton from './components/CalendarButton.jsx'
 import Hero from './components/Hero.jsx'
+import SeasonStrip from './components/SeasonStrip.jsx'
+import Storylines from './components/Storylines.jsx'
 import Pulse from './components/Pulse.jsx'
 import Standings from './components/Standings.jsx'
 import Rankings from './components/Rankings.jsx'
@@ -77,6 +80,8 @@ export default function App() {
       {tab === 'Season' && (
         <>
           <Hero schedule={schedule} ourRank={ourRank} />
+          <SeasonStrip schedule={schedule} />
+          <Storylines schedule={schedule} standings={standings} apPoll={apPoll} />
           <Pulse games={gamesPlayed} bigTenIds={bigTenIds} />
           <Standings entries={standings} />
           <Rankings poll={apPoll} schedule={schedule} />
@@ -122,7 +127,10 @@ function Shell({ updatedAt, children }) {
                 })} ${CONFIG.TIMEZONE_LABEL}`
               : 'Live from ESPN'}
           </span>
-          <BookmarkButton />
+          <span className="topbar__actions">
+            <CalendarButton />
+            <BookmarkButton />
+          </span>
         </div>
         {children}
         <footer className="footer">
