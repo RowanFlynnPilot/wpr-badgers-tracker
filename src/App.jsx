@@ -152,17 +152,27 @@ function Shell({ updatedAt, children }) {
         </div>
         {children}
         <footer className="footer">
-          <p>
-            Data: ESPN public APIs, fetched live in your browser. Team marks are
-            referenced from ESPN's CDN. Wausau Pilot &amp; Review is not
-            affiliated with or endorsed by the University of Wisconsin, the Big
-            Ten Conference or ESPN.
-          </p>
-          <p>
-            <a className="footer__sponsorlink" href="sponsors.html" target="_blank" rel="noopener">
-              Put your business on this tracker →
-            </a>
-          </p>
+          <img
+            className="footer__badge"
+            src={CONFIG.WPR_BADGE}
+            alt=""
+            onError={(e) => {
+              e.currentTarget.style.display = 'none'
+            }}
+          />
+          <div>
+            <p>
+              Data: ESPN public APIs, fetched live in your browser. Team marks
+              are referenced from ESPN's CDN. Wausau Pilot &amp; Review is not
+              affiliated with or endorsed by the University of Wisconsin, the
+              Big Ten Conference or ESPN.
+            </p>
+            <p>
+              <a className="footer__sponsorlink" href="sponsors.html" target="_blank" rel="noopener">
+                Put your business on this tracker →
+              </a>
+            </p>
+          </div>
         </footer>
       </div>
     </>

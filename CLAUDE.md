@@ -48,6 +48,8 @@ sponsors.html     ← hosted media kit for the sales desk: inventory status
 scripts/          ← render-digest.mjs (CI → dist/digest.png) and
                     og-card.mjs (one-time public/og.png social card)
 public/og.png     ← committed og:image; regenerate via scripts/og-card.mjs
+public/wpr-typewriter-badge.png ← WPR press seal (masthead + footers),
+                    same asset as the paper's other tools
 ```
 
 Vite builds five entries (see `vite.config.js`). `base` is

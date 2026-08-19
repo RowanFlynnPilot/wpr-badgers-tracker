@@ -65,6 +65,16 @@ body {
 .masthead__title a {
   color: var(--ink);
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* The paper's typewriter press seal, beside the wordmark. */
+.masthead__badge {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
 }
 
 .masthead__tag {
@@ -789,6 +799,20 @@ input:focus-visible {
   border-top: 3px solid var(--ink);
   font-size: 12px;
   color: var(--ink-soft);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.footer__badge {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.footer p {
+  margin: 0 0 8px;
 }
 
 .footer__sponsorlink {
@@ -891,5 +915,12 @@ input:focus-visible {
      full width — centered rows read as one ribbon. */
   .seasonstrip {
     justify-content: center;
+  }
+
+  /* With the badge in the masthead, the nowrap tagline no longer fits
+     beside the wordmark on phones — let it wrap instead of overflowing. */
+  .masthead__tag {
+    white-space: normal;
+    text-align: right;
   }
 }

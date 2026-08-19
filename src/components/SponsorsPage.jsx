@@ -227,14 +227,24 @@ export default function SponsorsPage() {
         </div>
 
         <footer className="footer">
-          <p>
-            The tracker is not affiliated with or endorsed by the University
-            of Wisconsin, the Big Ten Conference or ESPN. Data via ESPN's
-            public feeds.{' '}
-            <a className="sp-see" href="./">
-              See the tracker →
-            </a>
-          </p>
+          <img
+            className="footer__badge"
+            src={CONFIG.WPR_BADGE}
+            alt=""
+            onError={(e) => {
+              e.currentTarget.style.display = 'none'
+            }}
+          />
+          <div>
+            <p>
+              The tracker is not affiliated with or endorsed by the University
+              of Wisconsin, the Big Ten Conference or ESPN. Data via ESPN's
+              public feeds.{' '}
+              <a className="sp-see" href="./">
+                See the tracker →
+              </a>
+            </p>
+          </div>
         </footer>
       </div>
     </>
