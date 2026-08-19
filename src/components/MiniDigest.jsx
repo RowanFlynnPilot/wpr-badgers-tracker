@@ -19,8 +19,16 @@ export default function MiniDigest() {
   const [standings, setStandings] = useState(null)
 
   useEffect(() => {
-    fetchSchedule().then(setSchedule).catch(() => {})
-    fetchStandings().then(setStandings).catch(() => {})
+    // Poll like the other minis: recovers a slow/failed first fetch (the CI
+    // screenshot run waits through one retry — see render-digest.mjs) and
+    // keeps a long-lived embed current. Failures keep the last good data.
+    const load = () => {
+      fetchSchedule().then(setSchedule).catch(() => {})
+      fetchStandings().then(setStandings).catch(() => {})
+    }
+    load()
+    const id = setInterval(load, 60_000)
+    return () => clearInterval(id)
   }, [])
 
   const imageMode = new URLSearchParams(window.location.search).has('image')

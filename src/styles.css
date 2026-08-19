@@ -870,4 +870,10 @@ a.sponsorband:hover {
     flex-basis: 100%;
     margin-left: 0;
   }
+
+  /* Wrapped strip rows: space-between scatters a short last row across the
+     full width — centered rows read as one ribbon. */
+  .seasonstrip {
+    justify-content: center;
+  }
 }

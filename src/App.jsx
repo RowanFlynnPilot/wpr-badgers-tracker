@@ -77,31 +77,33 @@ export default function App() {
     <Shell updatedAt={updatedAt}>
       <TabBar tabs={TABS} active={tab} onSelect={selectTab} />
 
-      {tab === 'Season' && (
-        <>
-          <Hero schedule={schedule} ourRank={ourRank} />
-          <SeasonStrip schedule={schedule} />
-          <Storylines schedule={schedule} standings={standings} apPoll={apPoll} />
-          <Pulse games={gamesPlayed} bigTenIds={bigTenIds} />
-          <Standings entries={standings} />
-          <Rankings poll={apPoll} schedule={schedule} />
-        </>
-      )}
+      <div id="tabpanel" role="tabpanel" aria-labelledby={`tab-${tab}`}>
+        {tab === 'Season' && (
+          <>
+            <Hero schedule={schedule} ourRank={ourRank} />
+            <SeasonStrip schedule={schedule} />
+            <Storylines schedule={schedule} standings={standings} apPoll={apPoll} />
+            <Pulse games={gamesPlayed} bigTenIds={bigTenIds} />
+            <Standings entries={standings} />
+            <Rankings poll={apPoll} schedule={schedule} />
+          </>
+        )}
 
-      {tab === 'Schedule' && (
-        <>
-          <Schedule games={schedule} bigTenIds={bigTenIds} />
-          <LastGame games={gamesPlayed} />
-        </>
-      )}
+        {tab === 'Schedule' && (
+          <>
+            <Schedule games={schedule} bigTenIds={bigTenIds} />
+            <LastGame games={gamesPlayed} />
+          </>
+        )}
 
-      {tab === 'Team' && (
-        <>
-          <Leaders group="offense" title="Offensive leaders" />
-          <Leaders group="defense" title="Defensive leaders" />
-          <Roster />
-        </>
-      )}
+        {tab === 'Team' && (
+          <>
+            <Leaders group="offense" title="Offensive leaders" />
+            <Leaders group="defense" title="Defensive leaders" />
+            <Roster />
+          </>
+        )}
+      </div>
 
       <Coverage />
     </Shell>

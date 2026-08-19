@@ -33,20 +33,33 @@ try {
     viewport: { width: 480, height: 1000 },
     locale: 'en-US',
     timezoneId: 'America/Chicago',
+    // ESPN (Akamai) started 403ing headless browsers (no CORS headers
+    // either) in Aug 2026 — that's what baked the blank 2026-08-16 digest.
+    // It keys on BOTH the User-Agent string and the sec-ch-ua client hint,
+    // so the header override below is required too. Keep the version
+    // roughly current with Playwright's bundled Chromium.
+    userAgent:
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36',
   })
+  // Chromium brands sec-ch-ua "HeadlessChrome" even when the UA string is
+  // overridden; without this line ESPN still 403s every request.
+  await page.setExtraHTTPHeaders({ 'sec-ch-ua': '"Chromium";v="149", "Not)A;Brand";v="24"' })
   await page.goto(url, { waitUntil: 'load', timeout: 60000 })
 
   // Wait for real data. The featured-game section exists whenever ESPN has
-  // a schedule (all year); LAST GAME and BIG TEN appear once the season
-  // starts. Best-effort on the full set so the offseason never fails the
-  // whole render.
+  // a schedule (all year), so its absence means the feed didn't load — and
+  // an empty "doorway" card must NEVER ship to the newsletter (it did once,
+  // 2026-08-16, when ESPN stalled from CI). Fail loudly instead: the
+  // workflow then re-publishes the last good digest.png. The 75s window
+  // spans one of the page's own 60s retry polls.
   await page.waitForSelector('.digest', { timeout: 60000 })
-  await page
-    .waitForFunction(
-      () => /NEXT UP|LIVE|LAST GAME/.test(document.querySelector('.digest')?.innerText || ''),
-      { timeout: 30000 },
-    )
-    .catch(() => console.warn('Proceeding without a game section (schedule feed slow?).'))
+  // NB: waitForFunction's options ride THIRD (second is the page-function
+  // arg) — passing {timeout} second silently keeps the 30s default.
+  await page.waitForFunction(
+    () => /NEXT UP|LIVE|LAST GAME/.test(document.querySelector('.digest')?.innerText || ''),
+    null,
+    { timeout: 75000 },
+  )
 
   // Ensure web fonts and the team logos have painted so nothing renders in
   // a fallback font or half-loaded.

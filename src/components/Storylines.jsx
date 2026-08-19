@@ -102,14 +102,17 @@ function rankedTests({ schedule, apPoll }) {
   const rankOf = new Map(apPoll.ranks.map((r) => [r.teamId, r.current]))
   const ranked = schedule.filter((g) => !g.completed && rankOf.has(g.them.id))
   if (!ranked.length) return null
-  const list = ranked
-    .slice(0, 3)
+  // List up to four in full; only summarize a genuine overflow — a trailing
+  // ellipsis on a near-complete list reads as a rendering glitch.
+  const shown = ranked.slice(0, 4)
+  const list = shown
     .map((g) => `#${rankOf.get(g.them.id)} ${g.them.short} (${shortDate(g)})`)
     .join(', ')
+  const extra = ranked.length - shown.length
   return {
     tag: 'Ranked tests',
     text: `${ranked.length} ranked opponent${ranked.length === 1 ? '' : 's'} ahead: ${list}${
-      ranked.length > 3 ? '…' : ''
+      extra ? `, and ${extra} more` : ''
     }.`,
   }
 }

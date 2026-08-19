@@ -296,7 +296,12 @@ export function fetchWprCoverage() {
         link: post.link,
         date: new Date(post.date),
         title: wpText(post.title ? post.title.rendered : ''),
-        excerpt: wpText(post.excerpt ? post.excerpt.rendered : ''),
+        // WP closes auto-excerpts with a literal "[…]" — swap it for a
+        // plain ellipsis so short excerpts don't end in bracket noise.
+        excerpt: wpText(post.excerpt ? post.excerpt.rendered : '').replace(
+          /\s*\[(?:…|\.{3})\]\s*$/,
+          '…',
+        ),
         image:
           sizes && sizes.medium && sizes.medium.source_url
             ? sizes.medium.source_url

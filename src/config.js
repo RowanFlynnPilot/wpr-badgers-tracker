@@ -30,8 +30,13 @@ export const CONFIG = {
     158: 'Freedom Trophy', // Nebraska
   },
 
-  // Where the bookmark/copy-link and the minis send readers.
-  CANONICAL_URL: 'https://wausaupilotandreview.com/wisconsin-badgers/',
+  // Where the bookmark/copy-link, the minis, the digest CTA and the
+  // calendar entries send readers. The dedicated tracker page doesn't exist
+  // yet; until WPR publishes one, land on the live Badgers-coverage archive.
+  // (The bare /wisconsin-badgers/ slug guess-redirects to a 2017 image
+  // attachment — never link it.)
+  CANONICAL_URL:
+    'https://wausaupilotandreview.com/category/sports/wisconsin-badgers-football/',
 
   // Sponsorship slots. null hides a slot entirely. Each slot is an object:
   //   { text: 'Presented by …',        required — the visible line
