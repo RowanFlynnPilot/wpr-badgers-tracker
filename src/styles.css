@@ -791,6 +791,16 @@ input:focus-visible {
   color: var(--ink-soft);
 }
 
+.footer__sponsorlink {
+  color: var(--cardinal);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.footer__sponsorlink:hover {
+  text-decoration: underline;
+}
+
 /* ---------------------------------------------------------- newsroom cards */
 .newsgrid {
   display: grid;

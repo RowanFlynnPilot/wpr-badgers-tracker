@@ -39,12 +39,18 @@ mini.html         ← featured-game card (whole card = one link)
 mini-standings.html ← Big Ten top 8, Wisconsin pinned if outside the cut
 mini-digest.html  ← newsletter card (next / last / Big Ten); ?image=1 drops
                     the CTA for the email screenshot
+sponsors.html     ← hosted media kit for the sales desk: inventory status
+                    reads LIVE from config (sold slots self-flip), demo
+                    embeds, per-slot inquiry CTAs → CONFIG.SPONSOR_INQUIRY.
+                    ?demo on the tracker/minis fills OPEN slots with a
+                    placeholder lockup (sold slots never overridden; plain
+                    URLs never show it). ?tab=Schedule deep-links a tab.
 scripts/          ← render-digest.mjs (CI → dist/digest.png) and
                     og-card.mjs (one-time public/og.png social card)
 public/og.png     ← committed og:image; regenerate via scripts/og-card.mjs
 ```
 
-Vite builds four entries (see `vite.config.js`). `base` is
+Vite builds five entries (see `vite.config.js`). `base` is
 `/wpr-badgers-tracker/` — change it if the repo is renamed. Sponsor slots
 are objects (`{ text, href, logo }`, `null` hides) rendered only through
 `Sponsor.jsx`; minis get `linkless` because each mini is already one `<a>`.

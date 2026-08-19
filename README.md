@@ -31,6 +31,10 @@ Live URLs once deployed:
 - Standings card: `…/wpr-badgers-tracker/mini-standings.html`
 - Newsletter digest page: `…/wpr-badgers-tracker/mini-digest.html`
 - Newsletter image: `…/wpr-badgers-tracker/digest.png`
+- Sponsorship media kit: `…/wpr-badgers-tracker/sponsors.html` — the URL to
+  hand the sales desk. Inventory status reads live from `src/config.js`
+  (sold slots flip to "Sold" on their own); append `?demo` to the tracker
+  or any mini to preview open placements with a placeholder lockup.
 
 ## Embed on WPR (WordPress Custom HTML block)
 

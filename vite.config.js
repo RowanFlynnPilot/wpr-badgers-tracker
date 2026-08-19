@@ -12,6 +12,7 @@ export default defineConfig({
         mini: resolve(__dirname, 'mini.html'),
         'mini-standings': resolve(__dirname, 'mini-standings.html'),
         'mini-digest': resolve(__dirname, 'mini-digest.html'),
+        sponsors: resolve(__dirname, 'sponsors.html'),
       },
       output: {
         // Without this, Rollup names the shared React chunk after an

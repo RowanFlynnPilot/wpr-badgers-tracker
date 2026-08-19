@@ -22,8 +22,15 @@ import { Loading, ErrorState } from './components/Status.jsx'
 
 const TABS = ['Season', 'Schedule', 'Team']
 
+// ?tab=Schedule deep-links a tab (the media kit's "see it live" links use
+// it); anything unrecognized falls back to Season.
+const initialTab = () => {
+  const wanted = new URLSearchParams(window.location.search).get('tab')
+  return TABS.includes(wanted) ? wanted : TABS[0]
+}
+
 export default function App() {
-  const [tab, setTab] = useState(TABS[0])
+  const [tab, setTab] = useState(initialTab)
   const [schedule, setSchedule] = useState(null)
   const [standings, setStandings] = useState(null) // null = pending, [] = unavailable
   const [apPoll, setApPoll] = useState(null)
@@ -150,6 +157,11 @@ function Shell({ updatedAt, children }) {
             referenced from ESPN's CDN. Wausau Pilot &amp; Review is not
             affiliated with or endorsed by the University of Wisconsin, the Big
             Ten Conference or ESPN.
+          </p>
+          <p>
+            <a className="footer__sponsorlink" href="sponsors.html" target="_blank" rel="noopener">
+              Put your business on this tracker →
+            </a>
           </p>
         </footer>
       </div>

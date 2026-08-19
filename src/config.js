@@ -48,7 +48,11 @@ export const CONFIG = {
   TITLE_SPONSOR: null, // banner slot, visible on every tab (wraps below the
   // title on phones — never hidden on mobile; sponsors pay for those eyes)
   SCHEDULE_SPONSOR: null, // band under the Schedule tab's slate
-  MINI_SPONSOR: null, // one quiet line at the foot of both mini cards
+  MINI_SPONSOR: null, // one quiet line at the foot of all three mini cards
+
+  // Where sponsorship inquiries land (the WPR sales desk — Chris).
+  // Used by the hosted media kit (sponsors.html) and its inquiry CTAs.
+  SPONSOR_INQUIRY: 'weber.chris@wausaupilotandreview.com',
 
   // WPR newsroom feed (WordPress REST). CATEGORY_ID is WPR's
   // "Wisconsin Badgers Football" category (verified July 2026 via
@@ -64,4 +68,16 @@ export const CONFIG = {
     domain: null, // e.g. 'rowanflynnpilot.github.io'
     src: 'https://plausible.io/js/script.js',
   },
+}
+
+// SALES DEMO MODE — append ?demo to any page (tracker or minis) and every
+// OPEN sponsor slot renders a placeholder lockup, so a prospect can see the
+// placement in situ before buying. Sold slots are never overridden, and
+// ordinary readers (no ?demo) never see placeholders. The media kit
+// (sponsors.html) links here.
+if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('demo')) {
+  const demo = { text: 'Presented by Your Business Here' }
+  CONFIG.TITLE_SPONSOR = CONFIG.TITLE_SPONSOR || demo
+  CONFIG.SCHEDULE_SPONSOR = CONFIG.SCHEDULE_SPONSOR || demo
+  CONFIG.MINI_SPONSOR = CONFIG.MINI_SPONSOR || demo
 }
