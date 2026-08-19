@@ -3,7 +3,7 @@ import { CONFIG } from '../config.js'
 import { fetchSchedule } from '../api.js'
 import { destination } from '../embed.js'
 import { track } from '../analytics.js'
-import { gameDate, gameTime, periodLabel } from '../format.js'
+import { gameDate, gameTime, liveLabel } from '../format.js'
 import Sponsor from './Sponsor.jsx'
 
 // Compact featured-game card. The whole card is a real link (target="_top")
@@ -25,8 +25,16 @@ export default function MiniGame() {
           if (!hasData.current) setFailed(true)
         })
     load()
-    const id = setInterval(load, 60_000) // live scores move
-    return () => clearInterval(id)
+    // Live scores move — but not for hidden tabs; refresh on return.
+    const tick = () => {
+      if (!document.hidden) load()
+    }
+    const id = setInterval(tick, 60_000)
+    document.addEventListener('visibilitychange', tick)
+    return () => {
+      clearInterval(id)
+      document.removeEventListener('visibilitychange', tick)
+    }
   }, [])
 
   if (failed) return null
@@ -42,7 +50,7 @@ export default function MiniGame() {
   const time = gameTime(game)
   const kicker =
     game.state === 'in'
-      ? `LIVE · ${periodLabel(game.period)} ${game.displayClock}`
+      ? `LIVE · ${liveLabel(game)}`
       : game.completed
         ? `Final · ${game.week}`
         : `${game.week} · ${gameDate(game, { month: 'numeric', day: 'numeric' })}${

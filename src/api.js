@@ -91,6 +91,7 @@ function normalizeEvent(event) {
     statusDetail: status.type.shortDetail,
     period: status.period,
     displayClock: status.displayClock,
+    halftime: status.type.name === 'STATUS_HALFTIME',
     us: side(us, rank(us)),
     them: side(them, rank(them)),
     won: us.winner === true,

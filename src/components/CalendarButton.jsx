@@ -36,7 +36,7 @@ export default function CalendarButton() {
   }
 
   return (
-    <button className="bookmark__btn" onClick={onClick} disabled={busy}>
+    <button className="chipbtn" onClick={onClick} disabled={busy}>
       {busy ? 'Preparing…' : '+ Calendar'}
     </button>
   )

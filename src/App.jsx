@@ -55,8 +55,17 @@ export default function App() {
         .catch(() => {})
     }
     load()
-    const id = setInterval(load, 60_000)
-    return () => clearInterval(id)
+    // Background tabs skip the poll (no point hammering ESPN for pixels
+    // nobody sees); coming back refreshes immediately via visibilitychange.
+    const tick = () => {
+      if (!document.hidden) load()
+    }
+    const id = setInterval(tick, 60_000)
+    document.addEventListener('visibilitychange', tick)
+    return () => {
+      clearInterval(id)
+      document.removeEventListener('visibilitychange', tick)
+    }
   }, [])
 
   const selectTab = (next) => {

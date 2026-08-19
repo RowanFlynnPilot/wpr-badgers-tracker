@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { CONFIG } from '../config.js'
 import { track } from '../analytics.js'
 
@@ -12,8 +12,26 @@ export default function BookmarkButton() {
   // delegates it (allow="clipboard-write" — in the README snippet). When it
   // still fails, fall back to a select-and-copy field.
   const [manual, setManual] = useState(false)
+  const wrap = useRef(null)
   const isMac =
     typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform)
+
+  // Standard popover manners: tap outside or Escape closes it.
+  useEffect(() => {
+    if (!open) return
+    const onPointer = (e) => {
+      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false)
+    }
+    const onKey = (e) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('pointerdown', onPointer)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('pointerdown', onPointer)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [open])
 
   const toggle = () => {
     const next = !open
@@ -33,8 +51,8 @@ export default function BookmarkButton() {
   }
 
   return (
-    <div className="bookmark">
-      <button className="bookmark__btn" onClick={toggle} aria-expanded={open}>
+    <div className="bookmark" ref={wrap}>
+      <button className="chipbtn" onClick={toggle} aria-expanded={open}>
         ☆ Bookmark
       </button>
       {open && (

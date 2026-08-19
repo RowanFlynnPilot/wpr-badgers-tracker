@@ -28,8 +28,15 @@ export default function MiniStandings() {
           if (!hasData.current) setFailed(true)
         })
     load()
-    const id = setInterval(load, 60_000)
-    return () => clearInterval(id)
+    const tick = () => {
+      if (!document.hidden) load()
+    }
+    const id = setInterval(tick, 60_000)
+    document.addEventListener('visibilitychange', tick)
+    return () => {
+      clearInterval(id)
+      document.removeEventListener('visibilitychange', tick)
+    }
   }, [])
 
   if (failed) return null

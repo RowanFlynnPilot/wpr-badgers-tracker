@@ -103,9 +103,10 @@ are objects (`{ text, href, logo }`, `null` hides) rendered only through
 
 The app and all three mini cards (game, standings, digest) **poll every
 60s** (schedule memoized 30s in `api.js`) — that's what makes live scores
-and Saturday standings move without a refresh. A failed poll keeps the last
-good data; the error screen appears only if the *first* load fails. Don't
-"optimize" the polling away. The digest render fails loudly rather than
+and Saturday standings move without a refresh. Hidden tabs skip the poll
+and refresh immediately on return (visibilitychange). A failed poll keeps
+the last good data; the error screen appears only if the *first* load
+fails. Don't "optimize" the polling away. The digest render fails loudly rather than
 bake an empty card (it shipped one once, 2026-08-16); on render failure the
 workflow re-publishes the last good digest.png.
 

@@ -31,3 +31,10 @@ export function periodLabel(period) {
   if (period <= 4) return `Q${period}`
   return period === 5 ? 'OT' : `${period - 4}OT`
 }
+
+// In-game status line: "Q3 4:12", except the break — "Halftime" beats
+// "Q2 0:00".
+export function liveLabel(game) {
+  if (game.halftime) return 'Halftime'
+  return `${periodLabel(game.period)} ${game.displayClock}`
+}

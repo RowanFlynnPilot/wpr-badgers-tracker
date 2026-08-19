@@ -92,8 +92,9 @@ Mini Big Ten standings:
 </script>
 ```
 
-Add `?to=https://…` to either mini's `src` to change where a tap lands
-(defaults to the canonical WPR Badgers page in `src/config.js`).
+Add `?to=https://…` to any mini page's `src` (game card, standings,
+digest) to change where a tap lands (defaults to the canonical WPR Badgers
+page in `src/config.js`).
 
 ## Newsletter image (digest.png)
 

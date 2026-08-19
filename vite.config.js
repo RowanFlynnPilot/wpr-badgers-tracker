@@ -13,6 +13,11 @@ export default defineConfig({
         'mini-standings': resolve(__dirname, 'mini-standings.html'),
         'mini-digest': resolve(__dirname, 'mini-digest.html'),
       },
+      output: {
+        // Without this, Rollup names the shared React chunk after an
+        // arbitrary module ("styles-*.js") — confusing in devtools.
+        manualChunks: { vendor: ['react', 'react-dom'] },
+      },
     },
   },
 })

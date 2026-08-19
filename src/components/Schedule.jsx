@@ -1,6 +1,6 @@
 import React from 'react'
 import { CONFIG } from '../config.js'
-import { gameDate, gameTime, periodLabel } from '../format.js'
+import { gameDate, gameTime, liveLabel } from '../format.js'
 import Section from './Section.jsx'
 import Sponsor from './Sponsor.jsx'
 
@@ -61,7 +61,7 @@ export default function Schedule({ games, bigTenIds }) {
                 </span>
               ) : game.state === 'in' ? (
                 <span className="game__result">
-                  {game.us.score}–{game.them.score} · {periodLabel(game.period)}
+                  {game.us.score}–{game.them.score} · {liveLabel(game)}
                 </span>
               ) : (
                 game.tv

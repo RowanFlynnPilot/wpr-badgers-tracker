@@ -187,7 +187,7 @@ a.sponsorband:hover {
   flex-shrink: 0;
 }
 
-.bookmark__btn:disabled {
+.chipbtn:disabled {
   opacity: 0.6;
   cursor: default;
 }
@@ -218,7 +218,12 @@ a.sponsorband:hover {
   color: var(--white);
 }
 
-.tab:focus-visible {
+/* One focus treatment everywhere — keyboard users get the same teal ring
+   on tabs, links, buttons, roster groups and the copy-link field. */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+input:focus-visible {
   outline: 3px solid var(--teal);
   outline-offset: 2px;
 }
@@ -718,7 +723,8 @@ a.sponsorband:hover {
   position: relative;
 }
 
-.bookmark__btn {
+/* Shared pill button (bookmark + calendar). */
+.chipbtn {
   font-family: var(--body);
   font-weight: 700;
   font-size: 12px;

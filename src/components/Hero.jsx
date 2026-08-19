@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { CONFIG } from '../config.js'
-import { gameDate, gameTime, periodLabel } from '../format.js'
+import { gameDate, gameTime, liveLabel } from '../format.js'
 
 const HOUR = 3_600_000
 const DAY = 24 * HOUR
@@ -50,8 +50,7 @@ export default function Hero({ schedule, ourRank }) {
     return (
       <div className="hero">
         <div className="hero__kicker">
-          <span className="hero__live">Live</span> {live.week} ·{' '}
-          {periodLabel(live.period)} {live.displayClock}
+          <span className="hero__live">Live</span> {live.week} · {liveLabel(live)}
         </div>
         <div className="hero__matchup">
           <TeamChip team={{ ...live.us, rank: ourRank || live.us.rank }} />

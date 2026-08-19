@@ -3,7 +3,7 @@ import { CONFIG } from '../config.js'
 import { fetchSchedule, fetchStandings } from '../api.js'
 import { destination } from '../embed.js'
 import { track } from '../analytics.js'
-import { gameDate, gameTime, periodLabel } from '../format.js'
+import { gameDate, gameTime, liveLabel } from '../format.js'
 import Sponsor from './Sponsor.jsx'
 
 const SHOW = 8
@@ -27,8 +27,15 @@ export default function MiniDigest() {
       fetchStandings().then(setStandings).catch(() => {})
     }
     load()
-    const id = setInterval(load, 60_000)
-    return () => clearInterval(id)
+    const tick = () => {
+      if (!document.hidden) load()
+    }
+    const id = setInterval(tick, 60_000)
+    document.addEventListener('visibilitychange', tick)
+    return () => {
+      clearInterval(id)
+      document.removeEventListener('visibilitychange', tick)
+    }
   }, [])
 
   const imageMode = new URLSearchParams(window.location.search).has('image')
@@ -68,9 +75,7 @@ export default function MiniDigest() {
   if (live) {
     featured = (
       <div className="digest__section">
-        <div className="digest__heading">
-          Live · {periodLabel(live.period)} {live.displayClock}
-        </div>
+        <div className="digest__heading">Live · {liveLabel(live)}</div>
         <div className="digest__matchup">
           {live.us.logo && <img src={live.us.logo} alt="" />}
           <span>{CONFIG.TEAM_SHORT}</span>
