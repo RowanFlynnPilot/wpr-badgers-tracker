@@ -7,9 +7,17 @@ const SITE_V2 = 'https://site.api.espn.com/apis/v2/sports/football/college-footb
 const CORE = 'https://sports.core.api.espn.com/v2/sports/football/leagues/college-football'
 
 async function getJSON(url) {
-  const res = await fetch(url)
-  if (!res.ok) throw new Error(`ESPN ${res.status} — ${url}`)
-  return res.json()
+  // 45s cap (< the 60s poll) so a hung request can't straddle the next tick
+  // and resolve late with stale data over a fresher poll's.
+  const ctrl = new AbortController()
+  const timer = setTimeout(() => ctrl.abort(), 45_000)
+  try {
+    const res = await fetch(url, { signal: ctrl.signal })
+    if (!res.ok) throw new Error(`ESPN ${res.status} — ${url}`)
+    return res.json()
+  } finally {
+    clearTimeout(timer)
+  }
 }
 
 // Short-TTL promise memoization so tab flips are instant, not refetches.
@@ -72,7 +80,6 @@ function normalizeEvent(event) {
       comp.notes && comp.notes.length && comp.notes[0].headline
         ? comp.notes[0].headline
         : '',
-    name: event.name,
     homeAway: us.homeAway, // 'home' | 'away'
     neutralSite: Boolean(comp.neutralSite),
     venue: comp.venue
@@ -88,7 +95,8 @@ function normalizeEvent(event) {
       .join(' / '),
     state: status.type.state, // 'pre' | 'in' | 'post'
     completed: status.type.completed,
-    statusDetail: status.type.shortDetail,
+    // status.type.shortDetail is deliberately NOT carried — ESPN's status
+    // strings are Eastern and must never be displayed (see CLAUDE.md).
     period: status.period,
     displayClock: status.displayClock,
     halftime: status.type.name === 'STATUS_HALFTIME',
@@ -136,7 +144,6 @@ export function fetchStandings() {
         pointsFor: num('pointsfor'),
         pointsAgainst: num('pointsagainst'),
         streak: disp('streak'),
-        seed: num('playoffseed'),
       }
     })
     const pointDiff = (t) => t.pointsFor - t.pointsAgainst

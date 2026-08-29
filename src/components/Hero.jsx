@@ -14,7 +14,10 @@ function countdown(game) {
     const hours = Math.round(ms / HOUR)
     return `Kickoff in ${hours} hour${hours === 1 ? '' : 's'}`
   }
-  const days = Math.max(1, Math.ceil(ms / DAY))
+  // TBD stamps are midnight Eastern, so the remainder goes negative once the
+  // (Eastern) game date arrives — "in 1 day" would lie all game day.
+  const days = Math.ceil(ms / DAY)
+  if (days < 1) return 'Kickoff today'
   return `Kickoff in ${days} day${days === 1 ? '' : 's'}`
 }
 
@@ -50,11 +53,14 @@ export default function Hero({ schedule, ourRank }) {
     return (
       <div className="hero">
         <div className="hero__kicker">
-          <span className="hero__live">Live</span> {live.week} · {liveLabel(live)}
+          <span className="hero__live">Live</span>{' '}
+          {[live.week, liveLabel(live)].filter(Boolean).join(' · ')}
         </div>
         <div className="hero__matchup">
           <TeamChip team={{ ...live.us, rank: ourRank || live.us.rank }} />
-          <span className="hero__score">
+          {/* polite: announce score changes, not every clock tick (the
+              clock lives in the kicker, outside this region) */}
+          <span className="hero__score" aria-live="polite">
             {live.us.score}–{live.them.score}
           </span>
           <TeamChip team={live.them} />
@@ -78,9 +84,15 @@ export default function Hero({ schedule, ourRank }) {
       <div className="hero">
         <div className="hero__kicker">
           {next.note ||
-            `${next.week} · ${
-              next.homeAway === 'home' ? 'Camp Randall' : venueLine(next)
-            }`}
+            [
+              next.week,
+              // A home-designated neutral game still isn't Camp Randall.
+              next.homeAway === 'home' && !next.neutralSite
+                ? 'Camp Randall'
+                : venueLine(next),
+            ]
+              .filter(Boolean)
+              .join(' · ')}
         </div>
         <div className="hero__count">{countdown(next)}</div>
         <div className="hero__matchup">

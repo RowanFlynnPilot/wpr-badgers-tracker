@@ -108,12 +108,12 @@ mornings during the season (Aug–Jan). Drop it into the newsletter as a
 linked image — the image has no CTA of its own, so keep the text link:
 
 ```html
-<a href="https://wausaupilotandreview.com/wisconsin-badgers/">
+<a href="https://wausaupilotandreview.com/category/sports/wisconsin-badgers-football/">
   <img src="https://rowanflynnpilot.github.io/wpr-badgers-tracker/digest.png"
     width="420" alt="Badgers digest: next game, last result, Big Ten standings"
     style="width:100%;max-width:420px;border:0;">
 </a>
-<p><a href="https://wausaupilotandreview.com/wisconsin-badgers/">Full Badgers tracker →</a></p>
+<p><a href="https://wausaupilotandreview.com/category/sports/wisconsin-badgers-football/">Full Badgers tracker →</a></p>
 ```
 
 Note the image URL is stable but email clients cache aggressively; if a

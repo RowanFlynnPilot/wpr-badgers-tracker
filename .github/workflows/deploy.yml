@@ -17,6 +17,10 @@ on:
     # UTC and ignores DST — ahead of the morning sends either way.
     - cron: '30 11 * 8-12,1 FRI'
     - cron: '30 11 * 8-12,1 SUN'
+    # September Mondays: Labor-Day-weekend openers kick off on SUNDAY (the
+    # 2026 opener is Sun Sep 6), after that morning's SUN bake — without a
+    # Monday run the recap wouldn't reach the newsletter image until Friday.
+    - cron: '30 11 * 9 MON'
 
 permissions:
   contents: read

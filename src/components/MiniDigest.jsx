@@ -117,7 +117,7 @@ export default function MiniDigest() {
   }
 
   // The latest final — skipped when it's the same story as a live game day.
-  const lastBlock = last && (
+  const lastBlock = !live && last && (
     <div className="digest__section">
       <div className="digest__heading">
         Last game · {gameDate(last, { weekday: 'short', month: 'short', day: 'numeric' })}

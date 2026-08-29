@@ -80,7 +80,9 @@ export const CONFIG = {
 // ordinary readers (no ?demo) never see placeholders. The media kit
 // (sponsors.html) links here.
 if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('demo')) {
-  const demo = { text: 'Presented by Your Business Here' }
+  // `demo: true` lets surfaces with lasting output opt out — ics.js skips
+  // the placeholder so a prospect's "+ Calendar" download stays clean.
+  const demo = { text: 'Presented by Your Business Here', demo: true }
   CONFIG.TITLE_SPONSOR = CONFIG.TITLE_SPONSOR || demo
   CONFIG.SCHEDULE_SPONSOR = CONFIG.SCHEDULE_SPONSOR || demo
   CONFIG.MINI_SPONSOR = CONFIG.MINI_SPONSOR || demo

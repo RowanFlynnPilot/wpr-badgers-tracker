@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { CONFIG } from '../config.js'
 import { fetchGameSummary } from '../api.js'
+import { periodLabel } from '../format.js'
 import { THEME } from '../theme.js'
 import Section from './Section.jsx'
 
@@ -36,7 +37,7 @@ export default function LastGame({ games }) {
                 <span />
               )}
               <span className="play__clock">
-                Q{play.period.number} {play.clock.displayValue}
+                {periodLabel(play.period.number)} {play.clock.displayValue}
               </span>
               <span>{play.text}</span>
               <span className="play__score">

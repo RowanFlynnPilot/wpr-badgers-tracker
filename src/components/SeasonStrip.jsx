@@ -13,10 +13,19 @@ export default function SeasonStrip({ schedule }) {
       className="seasonstrip"
       role="img"
       aria-label={
+        // Colors carry the results for sighted readers; the label carries
+        // the same game-by-game story for screen readers.
         played.length
           ? `Season at a glance: ${wins} wins, ${played.length - wins} losses, ${
               schedule.length - played.length
-            } games to play`
+            } games to play. ${played
+              .map(
+                (g) =>
+                  `${g.won ? 'W' : 'L'} ${
+                    g.homeAway === 'home' || g.neutralSite ? 'vs' : 'at'
+                  } ${g.them.short}`,
+              )
+              .join(', ')}.`
           : `Season at a glance: all ${schedule.length} games ahead`
       }
     >

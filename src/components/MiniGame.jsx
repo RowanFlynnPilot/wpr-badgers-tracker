@@ -48,14 +48,20 @@ export default function MiniGame() {
 
   const showScore = game.completed || game.state === 'in'
   const time = gameTime(game)
+  // Postseason events can lack week text — join what exists, no dangling "·".
   const kicker =
     game.state === 'in'
       ? `LIVE · ${liveLabel(game)}`
       : game.completed
-        ? `Final · ${game.week}`
-        : `${game.week} · ${gameDate(game, { month: 'numeric', day: 'numeric' })}${
-            time ? `, ${time} ${CONFIG.TIMEZONE_LABEL}` : ' · time TBA'
-          }`
+        ? ['Final', game.week].filter(Boolean).join(' · ')
+        : [
+            game.week,
+            `${gameDate(game, { month: 'numeric', day: 'numeric' })}${
+              time ? `, ${time} ${CONFIG.TIMEZONE_LABEL}` : ' · time TBA'
+            }`,
+          ]
+            .filter(Boolean)
+            .join(' · ')
 
   return (
     <a

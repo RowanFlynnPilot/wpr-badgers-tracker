@@ -26,9 +26,11 @@ const esc = (s) => String(s || '').replace(/([,;\\])/g, '\\$1').replace(/\n/g, '
 export function buildICS(games) {
   const stamp = utcStamp(new Date())
   // The description rides along into the reader's calendar for the season —
-  // including the title sponsor, when one is set.
+  // including the title sponsor, when one is set. Never the ?demo
+  // placeholder: a download outlives the demo page that produced it.
+  const sponsor = CONFIG.TITLE_SPONSOR
   const description = `Live Badgers tracker from Wausau Pilot & Review${
-    CONFIG.TITLE_SPONSOR && CONFIG.TITLE_SPONSOR.text ? ` — ${CONFIG.TITLE_SPONSOR.text}` : ''
+    sponsor && sponsor.text && !sponsor.demo ? ` — ${sponsor.text}` : ''
   }: ${CONFIG.CANONICAL_URL}`
 
   const lines = [

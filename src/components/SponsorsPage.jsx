@@ -122,7 +122,8 @@ export default function SponsorsPage() {
             />
             {days > 0 && (
               <span className="sp-band__urgency">
-                Kickoff in {days} days — placements close before Week 1
+                Kickoff in {days} day{days === 1 ? '' : 's'} — placements
+                close before Week 1
               </span>
             )}
           </div>

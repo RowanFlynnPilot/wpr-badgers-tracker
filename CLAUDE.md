@@ -195,4 +195,6 @@ paid sponsor to this widget, confirm comfort level (or set
   first (WPR's call).
 
 (The weekly digest PNG was on this list and is now built — ported July 2026
-from `wpr-brewers-tracker`: Fri preview + Sun recap crons, Aug–Jan only.)
+from `wpr-brewers-tracker`: Fri preview + Sun recap crons, Aug–Jan only,
+plus Sep Mondays — Labor-Day-weekend openers play Sunday, after the Sun
+morning bake.)

@@ -21,7 +21,10 @@ export default function Schedule({ games, bigTenIds }) {
         {games.map((game) => (
           <div
             key={game.id}
-            className={`game${game.homeAway === 'home' ? ' game--home' : ''}`}
+            className={`game${
+              // Neutral games aren't Camp Randall dates — no cardinal edge.
+              game.homeAway === 'home' && !game.neutralSite ? ' game--home' : ''
+            }`}
           >
             <div className="game__when" style={{ whiteSpace: 'pre-line' }}>
               {when(game)}
@@ -30,7 +33,8 @@ export default function Schedule({ games, bigTenIds }) {
               {game.them.logo && <img src={game.them.logo} alt="" loading="lazy" />}
               <div>
                 <div className="game__name">
-                  {game.homeAway === 'home' ? 'vs' : 'at'}{' '}
+                  {/* Neutral sites read "vs" — the venue line has the where. */}
+                  {game.homeAway === 'home' || game.neutralSite ? 'vs' : 'at'}{' '}
                   {game.them.rank && (
                     <span className="rankchip">#{game.them.rank} </span>
                   )}
