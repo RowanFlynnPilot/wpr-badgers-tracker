@@ -2,11 +2,13 @@ import React, { useEffect, useRef, useState } from 'react'
 import { CONFIG } from './config.js'
 import { fetchSchedule, fetchStandings, fetchAPPoll } from './api.js'
 import { track } from './analytics.js'
+import { gameDate, gameTime } from './format.js'
 import Masthead from './components/Masthead.jsx'
 import BadgersBanner from './components/BadgersBanner.jsx'
 import TabBar from './components/TabBar.jsx'
 import BookmarkButton from './components/BookmarkButton.jsx'
 import CalendarButton from './components/CalendarButton.jsx'
+import ShareButton from './components/ShareButton.jsx'
 import Hero from './components/Hero.jsx'
 import SeasonStrip from './components/SeasonStrip.jsx'
 import Storylines from './components/Storylines.jsx'
@@ -88,9 +90,10 @@ export default function App() {
   const ourRank = apPoll
     ? (apPoll.ranks.find((r) => r.teamId === CONFIG.TEAM_ID) || {}).current || null
     : null
+  const shareLine = buildShareLine(schedule)
 
   return (
-    <Shell updatedAt={updatedAt}>
+    <Shell updatedAt={updatedAt} share={shareLine}>
       <TabBar tabs={TABS} active={tab} onSelect={selectTab} />
 
       <div id="tabpanel" role="tabpanel" aria-labelledby={`tab-${tab}`}>
@@ -116,7 +119,7 @@ export default function App() {
           <>
             <Leaders group="offense" title="Offensive leaders" />
             <Leaders group="defense" title="Defensive leaders" />
-            <Roster />
+            <Roster defaultOpenFirst={gamesPlayed.length === 0} />
           </>
         )}
       </div>
@@ -126,7 +129,28 @@ export default function App() {
   )
 }
 
-function Shell({ updatedAt, children }) {
+// One line that travels well in a share sheet, mirroring the hero's state.
+function buildShareLine(schedule) {
+  const vsAt = (g) => (g.homeAway === 'home' || g.neutralSite ? 'vs' : 'at')
+  const live = schedule.find((g) => g.state === 'in')
+  if (live)
+    return `Badgers ${live.us.score}–${live.them.score} ${vsAt(live)} ${live.them.short} — live now`
+  const next = schedule.find((g) => g.state === 'pre')
+  if (next) {
+    const time = gameTime(next)
+    return `Badgers ${vsAt(next)} ${next.them.short}, ${gameDate(next, {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+    })}${time ? `, ${time} ${CONFIG.TIMEZONE_LABEL}` : ''}`
+  }
+  const last = [...schedule].reverse().find((g) => g.completed)
+  if (last)
+    return `Final: Badgers ${last.won ? 'beat' : 'fall to'} ${last.them.short}, ${last.us.score}–${last.them.score}`
+  return ''
+}
+
+function Shell({ updatedAt, share, children }) {
   return (
     <>
       <div className="wrap wrap--head">
@@ -146,6 +170,7 @@ function Shell({ updatedAt, children }) {
               : 'Live from ESPN'}
           </span>
           <span className="topbar__actions">
+            {share && <ShareButton text={share} />}
             <CalendarButton />
             <BookmarkButton />
           </span>

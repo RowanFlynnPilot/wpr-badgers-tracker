@@ -87,6 +87,8 @@ function normalizeEvent(event) {
           name: comp.venue.fullName,
           city: comp.venue.address ? comp.venue.address.city : '',
           state: comp.venue.address ? comp.venue.address.state : '',
+          // Unambiguous geocoding key for the kickoff forecast (weather.js).
+          zip: comp.venue.address ? comp.venue.address.zipCode || '' : '',
         }
       : null,
     tv: (comp.broadcasts || [])

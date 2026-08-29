@@ -34,6 +34,13 @@ export const CONFIG = {
   // masthead and footers — the same badge as the paper's other tools.
   WPR_BADGE: `${import.meta.env.BASE_URL}wpr-typewriter-badge.png`,
 
+  // The paper's wordmark (served from WPR's own WP uploads, same as the
+  // Brewers tracker), home link, and tagline — the masthead set.
+  WPR_LOGO:
+    'https://wausaupilotandreview.com/wp-content/uploads/2024/04/WausauPilotandReviewLogo.png',
+  WPR_URL: 'https://wausaupilotandreview.com',
+  WPR_TAGLINE: 'Independent. Local. Nonprofit news.',
+
   // Where the bookmark/copy-link, the minis, the digest CTA and the
   // calendar entries send readers. The dedicated tracker page doesn't exist
   // yet; until WPR publishes one, land on the live Badgers-coverage archive.

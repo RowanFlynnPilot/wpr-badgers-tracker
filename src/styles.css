@@ -45,41 +45,72 @@ body {
 }
 
 /* ------------------------------------------------------------- masthead */
+/* The paper's newspaper-style header, shared with the Brewers tracker:
+   press seal + wordmark, tagline, dateline. */
 .masthead {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
   padding: 18px 0 10px;
   border-bottom: 3px solid var(--ink);
+  text-align: center;
 }
 
-.masthead__title {
-  font-family: var(--display);
-  font-weight: 900;
-  font-size: 22px;
-  letter-spacing: -0.01em;
-}
-
-.masthead__title a {
-  color: var(--ink);
-  text-decoration: none;
+.masthead__home {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 12px;
+  max-width: 92%;
+  text-decoration: none;
 }
 
 /* The paper's typewriter press seal, beside the wordmark. */
 .masthead__badge {
-  width: 34px;
-  height: 34px;
+  width: 42px;
+  height: 42px;
   flex-shrink: 0;
 }
 
+.masthead__wordmark {
+  max-height: 56px;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  min-width: 0;
+}
+
+/* Set-type stand-in when the hosted wordmark image can't load. */
+.masthead__textmark {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 26px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
 .masthead__tag {
-  font-size: 12px;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
   color: var(--ink-soft);
-  white-space: nowrap;
+  margin-top: 8px;
+}
+
+.masthead__dateline {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+
+.masthead__place {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
 /* --------------------------------------------------------------- banner */
@@ -178,6 +209,7 @@ a.sponsorband:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap; /* three chips + the stamp share one row only when it fits */
   gap: 10px;
   padding: 10px 0;
   border-bottom: 1px solid var(--line);
@@ -916,10 +948,4 @@ input:focus-visible {
     justify-content: center;
   }
 
-  /* With the badge in the masthead, the nowrap tagline no longer fits
-     beside the wordmark on phones — let it wrap instead of overflowing. */
-  .masthead__tag {
-    white-space: normal;
-    text-align: right;
-  }
 }

@@ -28,6 +28,11 @@ src/config.js     ← the ONLY place season/team/sponsor/analytics/rivalry live
 src/App.jsx       ← shared fetches (schedule/standings/AP poll), tabs, chrome
 src/ics.js        ← .ics builder for the "+ Calendar" download (TBD games
                     become all-day entries on the Eastern-recovered date)
+src/weather.js    ← Open-Meteo kickoff forecast for the hero (geocodes the
+                    venue zip — unambiguous where city names aren't — then
+                    reads the hourly forecast; null past the 16-day range
+                    or while kickoff is TBA). A deliberate third external
+                    API, same rules as ESPN: keyless, CORS-open, fail-soft.
 src/components/   ← one component per section; fail-soft sections own
                     their empty state and render nothing on error
                     (Sponsor.jsx renders every sponsor slot — see config.js;
@@ -49,7 +54,15 @@ scripts/          ← render-digest.mjs (CI → dist/digest.png) and
                     og-card.mjs (one-time public/og.png social card)
 public/og.png     ← committed og:image; regenerate via scripts/og-card.mjs
 public/wpr-typewriter-badge.png ← WPR press seal (masthead + footers),
-                    same asset as the paper's other tools
+                    same asset as the paper's other tools; the masthead
+                    pairs it with WPR's hosted wordmark + a dateline —
+                    the paper's newspaper header, shared with the Brewers
+                    tracker (set-type fallback if the wordmark 404s)
+public/icon.svg, manifest.webmanifest, sw.js ← PWA (Brewers parity):
+                    installable, offline shell via stale-while-revalidate
+                    on same-origin GETs only — ESPN/Open-Meteo/WPR are
+                    never cached. Registered in main.jsx; minis stay
+                    service-worker-free.
 ```
 
 Vite builds five entries (see `vite.config.js`). `base` is

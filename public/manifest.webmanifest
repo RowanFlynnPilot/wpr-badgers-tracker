@@ -1,0 +1,14 @@
+{
+  "name": "The Badgers, by the numbers — Wausau Pilot & Review",
+  "short_name": "Badgers",
+  "description": "Live Wisconsin Badgers football from Wausau Pilot & Review — schedule, Big Ten standings, AP poll and team leaders.",
+  "start_url": "/wpr-badgers-tracker/",
+  "scope": "/wpr-badgers-tracker/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F6F2E9",
+  "theme_color": "#C5050C",
+  "icons": [
+    { "src": "/wpr-badgers-tracker/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

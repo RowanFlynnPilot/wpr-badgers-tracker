@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { CONFIG } from '../config.js'
 import { gameDate, gameTime, liveLabel } from '../format.js'
+import { fetchKickoffForecast } from '../weather.js'
 
 const HOUR = 3_600_000
 const DAY = 24 * HOUR
@@ -48,6 +49,26 @@ export default function Hero({ schedule, ourRank }) {
   const live = schedule.find((g) => g.state === 'in')
   const next = schedule.find((g) => g.state === 'pre')
   const last = [...schedule].reverse().find((g) => g.completed)
+
+  // Kickoff forecast for the next game — fail-soft (the line just doesn't
+  // render); weather.js returns null past Open-Meteo's 16-day range, and a
+  // TBA kickoff (midnight-Eastern placeholder) is nothing to forecast.
+  const [forecast, setForecast] = useState(null)
+  const nextId = next ? next.id : null
+  const nextTimeValid = Boolean(next && next.timeValid)
+  useEffect(() => {
+    setForecast(null)
+    if (!nextId || !nextTimeValid) return
+    let alive = true
+    fetchKickoffForecast(next)
+      .then((f) => {
+        if (alive) setForecast(f)
+      })
+      .catch(() => {})
+    return () => {
+      alive = false
+    }
+  }, [nextId, nextTimeValid])
 
   if (live) {
     return (
@@ -109,6 +130,13 @@ export default function Hero({ schedule, ourRank }) {
           {time ? `, ${time} ${CONFIG.TIMEZONE_LABEL}` : ' · kickoff time TBA'}
           {next.tv && ` · ${next.tv}`}
         </div>
+        {forecast && (
+          <div className="hero__meta" style={{ marginTop: 6 }}>
+            Kickoff forecast: {forecast.tempF}°F, {forecast.label} ·{' '}
+            {forecast.precipPct}% chance of precipitation · {forecast.windMph}{' '}
+            mph wind
+          </div>
+        )}
         {last && (
           <div className="hero__meta" style={{ marginTop: 10 }}>
             Last time out: {last.won ? 'W' : 'L'} {last.us.score}–{last.them.score}{' '}

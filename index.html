@@ -12,6 +12,14 @@
       rel="icon"
       href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%23C5050C'/><text x='32' y='45' font-family='Georgia,serif' font-weight='bold' font-size='42' fill='%23FFFFFF' text-anchor='middle'>W</text><g fill='%23FFFFFF'><rect y='54' width='8' height='10'/><rect x='16' y='54' width='8' height='10'/><rect x='32' y='54' width='8' height='10'/><rect x='48' y='54' width='8' height='10'/></g></svg>"
     />
+    <!-- PWA: installable, themed, offline-capable shell (sw.js is
+         registered in main.jsx; the minis stay service-worker-free). -->
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#C5050C" />
+    <link rel="apple-touch-icon" href="icon.svg" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Badgers" />
     <!-- Social cards: og.png lives in public/ and deploys to the site root. -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Wausau Pilot &amp; Review" />
