@@ -541,22 +541,26 @@ input:focus-visible {
 }
 
 /* --------------------------------------------------------- hover feedback */
-/* A light cardinal wash tracks the pointer across the schedule cards, the
-   storyline cards, and the standings / AP Top 25 rows (`table--hover` keeps
-   it off the roster table). Transitions are killed under reduced motion by
-   the global switch below. */
+/* Two tiers. Non-clickable content (schedule / storyline / leader cards and
+   the standings / AP rows) just tracks the pointer with a light cardinal
+   wash — no border shift, so it never masquerades as a button. Clickable
+   surfaces (newsroom cards, inactive tabs, the header chips, roster group
+   headers) get a stronger, actionable hover. Transitions are killed under
+   reduced motion by the global switch below. */
 .game,
 .story,
+.leader,
+.newscard,
+.chipbtn,
+.roster summary,
 .table--hover tbody tr {
-  transition: background-color 0.12s ease, border-color 0.12s ease;
+  transition: background-color 0.12s ease, border-color 0.12s ease,
+    color 0.12s ease;
 }
 
 .game:hover,
-.story:hover {
-  background: rgba(197, 5, 12, 0.05);
-  border-color: var(--cardinal);
-}
-
+.story:hover,
+.leader:hover,
 .table--hover tbody tr:hover {
   background: rgba(197, 5, 12, 0.05);
 }
@@ -565,6 +569,26 @@ input:focus-visible {
    hover so it still reads as hovered rather than washing out. */
 .table--hover .row--us:hover {
   background: rgba(197, 5, 12, 0.12);
+}
+
+/* Clickable surfaces — an actionable hover. */
+.newscard:hover {
+  background: rgba(197, 5, 12, 0.05);
+  border-color: var(--cardinal);
+}
+
+/* Inactive tabs hint at the cardinal fill the active tab carries. */
+.tab:not([aria-selected='true']):hover {
+  background: rgba(197, 5, 12, 0.06);
+}
+
+.chipbtn:not(:disabled):hover {
+  border-color: var(--cardinal);
+  color: var(--cardinal);
+}
+
+.roster summary:hover {
+  background: rgba(197, 5, 12, 0.05);
 }
 
 /* -------------------------------------------------------------- schedule */
