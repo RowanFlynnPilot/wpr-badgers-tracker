@@ -38,62 +38,45 @@ Live URLs once deployed:
 
 ## Embed on WPR (WordPress Custom HTML block)
 
-All three embeds auto-resize (no inner scrollbar). Every listener checks
-`e.origin` and `e.source`, so multiple widgets on one page can't resize each
-other and no other frame can spoof a height message. The `height` attribute
-is just the placeholder before the first message arrives.
+All three embeds auto-resize (no inner scrollbar) via `public/embed.js`,
+loaded from the tracker's origin — the snippets contain **no inline
+JavaScript**, because WPR's WordPress refuses to save post content with an
+inline `<script>` body (the security layer blocks the save request and the
+editor shows "Updating failed. The response is not a valid JSON
+response."). One `embed.js` include per page is enough (extras no-op); it
+honors height messages only from the tracker's own origin and matches the
+sending frame, so multiple widgets on one page can't resize each other and
+no other frame can spoof a height. The `height` attribute is just the
+placeholder before the first message arrives — if it never changes, the
+`<script>` tag was stripped on save: paste from an Editor/Admin account.
 
 Main tracker (`allow="clipboard-write"` lets the ☆ Bookmark → Copy link
 button work inside the cross-origin iframe):
 
 ```html
-<iframe id="wpr-badgers" title="Wisconsin Badgers tracker"
+<iframe title="Wisconsin Badgers tracker"
   src="https://rowanflynnpilot.github.io/wpr-badgers-tracker/"
   style="width:100%;border:0;" height="900" loading="lazy"
   allow="clipboard-write"></iframe>
-<script>
-  window.addEventListener('message', function (e) {
-    if (e.origin !== 'https://rowanflynnpilot.github.io') return;
-    var f = document.getElementById('wpr-badgers');
-    if (f && e.source === f.contentWindow && e.data && e.data.type === 'wpr-badgers-height') {
-      f.style.height = e.data.height + 'px';
-    }
-  });
-</script>
+<script async src="https://rowanflynnpilot.github.io/wpr-badgers-tracker/embed.js"></script>
 ```
 
 Mini game card (sidebar / in-article):
 
 ```html
-<iframe id="wpr-badgers-mini" title="Badgers scoreboard"
+<iframe title="Badgers scoreboard"
   src="https://rowanflynnpilot.github.io/wpr-badgers-tracker/mini.html"
   style="width:100%;max-width:340px;border:0;" height="210" loading="lazy"></iframe>
-<script>
-  window.addEventListener('message', function (e) {
-    if (e.origin !== 'https://rowanflynnpilot.github.io') return;
-    var f = document.getElementById('wpr-badgers-mini');
-    if (f && e.source === f.contentWindow && e.data && e.data.type === 'wpr-badgers-height') {
-      f.style.height = e.data.height + 'px';
-    }
-  });
-</script>
+<script async src="https://rowanflynnpilot.github.io/wpr-badgers-tracker/embed.js"></script>
 ```
 
 Mini Big Ten standings:
 
 ```html
-<iframe id="wpr-badgers-standings" title="Big Ten standings"
+<iframe title="Big Ten standings"
   src="https://rowanflynnpilot.github.io/wpr-badgers-tracker/mini-standings.html"
   style="width:100%;max-width:340px;border:0;" height="330" loading="lazy"></iframe>
-<script>
-  window.addEventListener('message', function (e) {
-    if (e.origin !== 'https://rowanflynnpilot.github.io') return;
-    var f = document.getElementById('wpr-badgers-standings');
-    if (f && e.source === f.contentWindow && e.data && e.data.type === 'wpr-badgers-height') {
-      f.style.height = e.data.height + 'px';
-    }
-  });
-</script>
+<script async src="https://rowanflynnpilot.github.io/wpr-badgers-tracker/embed.js"></script>
 ```
 
 Add `?to=https://…` to any mini page's `src` (game card, standings,

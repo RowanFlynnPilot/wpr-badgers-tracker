@@ -135,8 +135,12 @@ All embeds autosize by posting `{ type: 'wpr-badgers-height' }` upward.
 The height posted is `documentElement.offsetHeight`, NOT `scrollHeight` —
 the root's scrollHeight floors at the viewport, so a scrollHeight-based
 iframe could grow but never shrink back (Team tab → Season tab would leave
-a screen of dead space). The README host snippets check `e.origin` and
-`e.source` so multiple widgets on one page can't resize each other.
+a screen of dead space). The host side lives in `public/embed.js`, loaded
+by the README snippets from this origin — WPR's WordPress refuses to SAVE
+posts containing inline `<script>` code (the security layer blocks the
+save → the editor's "not a valid JSON response" error), so the snippets
+are script-body-free. embed.js checks `e.origin` and matches `e.source`
+to a page iframe, so multiple widgets on one page can't resize each other.
 
 ## Offseason behavior (launching in July is the point)
 

@@ -15,4 +15,11 @@ export function initAutosize() {
     )
   new ResizeObserver(post).observe(document.documentElement)
   window.addEventListener('load', post)
+  // embed.js (the host-side listener) pings this when it attaches, in case
+  // the widget loaded and posted before it — a fast iframe can beat the
+  // async <script src> the snippets use. Height is already broadcast to
+  // any parent, so answering the ping leaks nothing new.
+  window.addEventListener('message', (e) => {
+    if (e.data === 'wpr-badgers-height?') post()
+  })
 }
