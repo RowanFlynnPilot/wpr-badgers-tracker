@@ -236,16 +236,19 @@ a.sponsorband:hover {
 /* ------------------------------------------------------------------ tabs */
 .tabbar {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   padding: 14px 0 0;
-  flex-wrap: wrap;
 }
 
 .tab {
+  /* Equal thirds across the full row — a segmented nav, no dead space to
+     the right of a left-clustered cluster. */
+  flex: 1;
+  text-align: center;
   font-family: var(--body);
   font-weight: 700;
   font-size: 14px;
-  padding: 9px 16px;
+  padding: 10px 16px;
   border: 1.5px solid var(--ink);
   background: transparent;
   color: var(--ink);
