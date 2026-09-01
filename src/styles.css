@@ -537,6 +537,33 @@ input:focus-visible {
   color: var(--cardinal);
 }
 
+/* --------------------------------------------------------- hover feedback */
+/* A light cardinal wash tracks the pointer across the schedule cards, the
+   storyline cards, and the standings / AP Top 25 rows (`table--hover` keeps
+   it off the roster table). Transitions are killed under reduced motion by
+   the global switch below. */
+.game,
+.story,
+.table--hover tbody tr {
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+
+.game:hover,
+.story:hover {
+  background: rgba(197, 5, 12, 0.05);
+  border-color: var(--cardinal);
+}
+
+.table--hover tbody tr:hover {
+  background: rgba(197, 5, 12, 0.05);
+}
+
+/* The pinned Wisconsin row already carries a cardinal tint — deepen it on
+   hover so it still reads as hovered rather than washing out. */
+.table--hover .row--us:hover {
+  background: rgba(197, 5, 12, 0.12);
+}
+
 /* -------------------------------------------------------------- schedule */
 .slate {
   display: grid;

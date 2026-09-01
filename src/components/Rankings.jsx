@@ -14,7 +14,7 @@ export default function Rankings({ poll, schedule }) {
       title="AP Top 25"
       sub="Badgers in cardinal; teams on the Wisconsin schedule tagged."
     >
-      <table className="table">
+      <table className="table table--hover">
         <tbody>
           {poll.ranks.map((team) => (
             <tr

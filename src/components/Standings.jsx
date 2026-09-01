@@ -14,7 +14,7 @@ export default function Standings({ entries }) {
       sub="Sorted by conference winning percentage."
     >
       <div className="tablewrap">
-        <table className="table">
+        <table className="table table--hover">
           <thead>
             <tr>
               <th>Team</th>
