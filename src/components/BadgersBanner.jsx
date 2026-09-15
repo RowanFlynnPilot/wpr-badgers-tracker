@@ -14,11 +14,9 @@ export default function BadgersBanner() {
         </div>
         <h1 className="banner__title">The Badgers, by the numbers</h1>
       </div>
-      <Sponsor
-        slot={CONFIG.TITLE_SPONSOR}
-        placement="banner"
-        className="banner__sponsor"
-      />
+      {/* Title sponsor spans the banner's full width on its own row — the
+          premium placement, sized like one (the Packers/Brewers lockup). */}
+      <Sponsor slot={CONFIG.TITLE_SPONSOR} placement="banner" variant="lockup" />
     </div>
   )
 }

@@ -242,6 +242,22 @@ export function fetchGameSummary(eventId) {
   )
 }
 
+// ------------------------------------------------------------------- teams
+
+// One team's season record ("1-2") and primary color ("#006938"). The team
+// schedule feed carries records only on completed games and never colors,
+// so the mini game card's pre-kickoff records and split top edge read here.
+export function fetchTeamInfo(teamId) {
+  return cached(`team:${teamId}`, 600_000, async () => {
+    const { team } = await getJSON(`${SITE}/teams/${teamId}`)
+    const total = ((team.record && team.record.items) || []).find((r) => r.type === 'total')
+    return {
+      record: total ? total.summary : null,
+      color: team.color ? `#${team.color}` : null,
+    }
+  })
+}
+
 // ------------------------------------------------------------------ roster
 
 export function fetchRoster() {

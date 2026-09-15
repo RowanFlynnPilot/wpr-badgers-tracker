@@ -1,4 +1,21 @@
 // Single source of truth. Change the team/season HERE and nowhere else.
+
+// Ho-Chunk Gaming Wittenberg — title sponsor of WPR's Badgers football
+// tracker, as on the Packers and Brewers trackers: same logo, tagline,
+// directions and disclaimer; the UTM campaign names this tool.
+const HO_CHUNK = {
+  name: 'Ho-Chunk Gaming Wittenberg',
+  text: 'Presented by Ho-Chunk Gaming Wittenberg',
+  // Self-hosted — see the brand-art note on WPR_LOGO.
+  // Source: cdn.wausaupilotandreview.com/wp-content/uploads/2025/07/HCG-W-Logo-1-336x115.jpg
+  logo: `${import.meta.env.BASE_URL}hcg-wittenberg-logo.jpg`,
+  href: 'https://www.ho-chunkgaming.com/wittenberg/?utm_source=wausaupilotandreview&utm_medium=widget&utm_campaign=badgers_tracker',
+  tagline: '800+ slots · Hotel · Dining — Wittenberg, WI',
+  address: 'N7198 US-45, Wittenberg, WI 54499',
+  disclaimer:
+    'Must be 21+. If you or someone you know has a gambling problem, call 1-800-GAMBLER.',
+}
+
 export const CONFIG = {
   SEASON: 2026,
 
@@ -34,12 +51,16 @@ export const CONFIG = {
   // masthead and footers — the same badge as the paper's other tools.
   WPR_BADGE: `${import.meta.env.BASE_URL}wpr-typewriter-badge.png`,
 
-  // The paper's wordmark (served from WPR's own WP uploads, same as the
-  // Brewers tracker), home link, and tagline — the masthead set.
-  WPR_LOGO:
-    'https://wausaupilotandreview.com/wp-content/uploads/2024/04/WausauPilotandReviewLogo.png',
+  // The paper's wordmark, home link, and tagline — the masthead set.
+  // Brand and sponsor art is SELF-HOSTED from public/: WPR moved its media
+  // library to cdn.wausaupilotandreview.com in Sept 2026 and old wp-content
+  // URLs began 404ing (it broke the Brewers tracker's sponsor logo live).
+  // Never hot-link WordPress uploads — copy the file into public/.
+  // Wordmark source: wausaupilotandreview.com/wp-content/uploads/2024/04/WausauPilotandReviewLogo.png
+  WPR_LOGO: `${import.meta.env.BASE_URL}wpr-wordmark.png`,
   WPR_URL: 'https://wausaupilotandreview.com',
-  WPR_TAGLINE: 'Independent. Local. Nonprofit news.',
+  // WPR's tagline, verbatim across every tool — don't rewrite it.
+  WPR_TAGLINE: 'Where Locals Look First For News',
 
   // Where the bookmark/copy-link, the minis, the digest CTA and the
   // calendar entries send readers. The dedicated tracker page doesn't exist
@@ -50,16 +71,22 @@ export const CONFIG = {
     'https://wausaupilotandreview.com/category/sports/wisconsin-badgers-football/',
 
   // Sponsorship slots. null hides a slot entirely. Each slot is an object:
-  //   { text: 'Presented by …',        required — the visible line
-  //     href: 'https://sponsor.com',   optional — makes the slot tappable
-  //                                    (new tab, rel=sponsored, click tracked)
-  //     logo: 'https://…/mark.png' }   optional — small mark beside the text
-  // The minis show text/logo only (never a link): the whole mini card is
-  // already one <a>, and nested links are invalid HTML.
-  TITLE_SPONSOR: null, // banner slot, visible on every tab (wraps below the
-  // title on phones — never hidden on mobile; sponsors pay for those eyes)
+  //   { text     required — the visible line ("Presented by …"); the title
+  //              slot's also rides inside the "+ Calendar" entries
+  //     name     sponsor name: the logo's alt text, and the stand-in if the
+  //              logo ever fails (a paid slot never shows a broken image)
+  //     logo     optional — self-hosted in public/ (see WPR_LOGO)
+  //     href     optional — makes the slot tappable (new tab, rel=sponsored,
+  //              click tracked per placement)
+  //     tagline  optional — 'offer — place'; the banner lockup splits it at
+  //              the em-dash, the offer large and the place small
+  //     address  optional — powers the banner lockup's Directions chip
+  //     disclaimer optional — footer line that travels with the sponsor }
+  // The minis never link the slot: the whole mini card is already one <a>,
+  // and nested links are invalid HTML.
+  TITLE_SPONSOR: HO_CHUNK, // banner lockup, visible on every tab
   SCHEDULE_SPONSOR: null, // band under the Schedule tab's slate
-  MINI_SPONSOR: null, // one quiet line at the foot of all three mini cards
+  MINI_SPONSOR: HO_CHUNK, // "Presented by" credit on all three mini cards (+ digest.png)
 
   // Where sponsorship inquiries land (the WPR sales desk — Chris).
   // Used by the hosted media kit (sponsors.html) and its inquiry CTAs.

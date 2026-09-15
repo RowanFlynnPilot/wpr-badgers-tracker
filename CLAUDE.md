@@ -28,7 +28,7 @@ src/config.js     ← the ONLY place season/team/sponsor/analytics/rivalry live
 src/App.jsx       ← shared fetches (schedule/standings/AP poll), tabs, chrome
 src/ics.js        ← .ics builder for the "+ Calendar" download (TBD games
                     become all-day entries on the Eastern-recovered date)
-src/weather.js    ← Open-Meteo kickoff forecast for the hero (geocodes the
+src/weather.js    ← Open-Meteo kickoff forecast for the hero + game card (geocodes the
                     venue zip — unambiguous where city names aren't — then
                     reads the hourly forecast; null past the 16-day range
                     or while kickoff is TBA). A deliberate third external
@@ -40,7 +40,13 @@ src/components/   ← one component per section; fail-soft sections own
                     preseason set vs season-so-far set, first 4 that resolve;
                     SeasonStrip.jsx is the 12-logo result ribbon;
                     Coverage.jsx renders WPR posts as photo cards)
-mini.html         ← featured-game card (whole card = one link)
+mini.html         ← featured-game card (whole card = one link), in the
+                    Packers/Brewers mini family: live → a final held 36h →
+                    next kickoff. Countdown pill, both records + the
+                    opponent's color for the split edge (`fetchTeamInfo`),
+                    kickoff forecast, win prob + down & distance while
+                    live, player of the game after. Transparent page; the
+                    README snippet is a bare 280px iframe (no script).
 mini-standings.html ← Big Ten top 8, Wisconsin pinned if outside the cut
 mini-digest.html  ← newsletter card (next / last / Big Ten); ?image=1 drops
                     the CTA for the email screenshot
@@ -55,9 +61,11 @@ scripts/          ← render-digest.mjs (CI → dist/digest.png) and
 public/og.png     ← committed og:image; regenerate via scripts/og-card.mjs
 public/wpr-typewriter-badge.png ← WPR press seal (masthead + footers),
                     same asset as the paper's other tools; the masthead
-                    pairs it with WPR's hosted wordmark + a dateline —
+                    pairs it with `wpr-wordmark.png` + a dateline —
                     the paper's newspaper header, shared with the Brewers
                     tracker (set-type fallback if the wordmark 404s)
+public/hcg-wittenberg-logo.jpg ← title/mini sponsor art (self-hosted copy,
+                    byte-identical to the Packers/Brewers trackers')
 public/icon.svg, manifest.webmanifest, sw.js ← PWA (Brewers parity):
                     installable, offline shell via stale-while-revalidate
                     on same-origin GETs only — ESPN/Open-Meteo/WPR are
@@ -67,8 +75,15 @@ public/icon.svg, manifest.webmanifest, sw.js ← PWA (Brewers parity):
 
 Vite builds five entries (see `vite.config.js`). `base` is
 `/wpr-badgers-tracker/` — change it if the repo is renamed. Sponsor slots
-are objects (`{ text, href, logo }`, `null` hides) rendered only through
-`Sponsor.jsx`; minis get `linkless` because each mini is already one `<a>`.
+are objects (shape documented in `config.js`, `null` hides) rendered only
+through `Sponsor.jsx`: `lockup` is the banner's white card (the Packers/
+Brewers title lockup — logo, tagline split at its em-dash, Directions),
+`credit` is the minis' "Presented by" + logo, and minis get `linkless`
+because each mini is already one `<a>`. **Ho-Chunk Gaming Wittenberg holds
+the title + mini slots** (same partner as the Packers and Brewers
+trackers); its 21+ disclaimer rides on the sponsor object into the footer.
+Brand and sponsor art is self-hosted in `public/` — never hot-link WPR's
+WordPress uploads (the Sept 2026 media migration 404'd them).
 
 ## ESPN data notes (hard-won, do not rediscover)
 

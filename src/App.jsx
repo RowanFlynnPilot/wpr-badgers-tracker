@@ -192,6 +192,10 @@ function Shell({ updatedAt, share, children }) {
               affiliated with or endorsed by the University of Wisconsin, the
               Big Ten Conference or ESPN.
             </p>
+            {CONFIG.TITLE_SPONSOR && CONFIG.TITLE_SPONSOR.disclaimer && (
+              <p>{CONFIG.TITLE_SPONSOR.disclaimer}</p>
+            )}
+            <p>Wausau Pilot &amp; Review · 715-301-5539</p>
             <p>
               <a className="footer__sponsorlink" href="sponsors.html" target="_blank" rel="noopener">
                 Put your business on this tracker →

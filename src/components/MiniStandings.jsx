@@ -91,6 +91,7 @@ export default function MiniStandings() {
         slot={CONFIG.MINI_SPONSOR}
         placement="mini-standings"
         className="mini__sponsor"
+        variant="credit"
         linkless
       />
     </a>

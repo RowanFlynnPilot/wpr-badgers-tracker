@@ -61,13 +61,19 @@ button work inside the cross-origin iframe):
 <script async src="https://rowanflynnpilot.github.io/wpr-badgers-tracker/embed.js"></script>
 ```
 
-Mini game card (sidebar / in-article):
+Mini game card (sidebar / in-article) — same family as the Packers and
+Brewers minis: the upcoming game with date, time, TV and week, a kickoff
+countdown, both teams' records, the venue and the kickoff forecast; the
+live score, down & distance and win probability during play; the final
+and player of the game for 36 hours afterward. A bare iframe, **no
+script** — WPR's firewall rejects any `<script>` tag on save, so this card
+uses a fixed height (280px fits every state down to a 250px-wide column,
+sponsor logo included):
 
 ```html
-<iframe title="Badgers scoreboard"
+<iframe title="Badgers scoreboard — tap for the full tracker"
   src="https://rowanflynnpilot.github.io/wpr-badgers-tracker/mini.html"
-  style="width:100%;max-width:340px;border:0;" height="210" loading="lazy"></iframe>
-<script async src="https://rowanflynnpilot.github.io/wpr-badgers-tracker/embed.js"></script>
+  style="width:100%;border:0;height:280px" loading="lazy"></iframe>
 ```
 
 Mini Big Ten standings:

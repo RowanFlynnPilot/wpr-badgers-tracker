@@ -180,6 +180,7 @@ export default function MiniDigest() {
         slot={CONFIG.MINI_SPONSOR}
         placement="mini-digest"
         className="mini__sponsor"
+        variant="credit"
         linkless
       />
       {!imageMode && <div className="mini__cta">Full Badgers tracker →</div>}
