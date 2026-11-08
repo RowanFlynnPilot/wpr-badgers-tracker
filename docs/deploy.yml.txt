@@ -21,6 +21,10 @@ on:
     # 2026 opener is Sun Sep 6), after that morning's SUN bake — without a
     # Monday run the recap wouldn't reach the newsletter image until Friday.
     - cron: '30 11 * 9 MON'
+    # Keepalive only (no build): the 1st of every month, year-round, so the
+    # Feb–Jul offseason never crosses GitHub's 60-day inactivity cutoff and
+    # the August crons still exist when the season returns.
+    - cron: '0 12 1 * *'
 
 permissions:
   contents: read
@@ -33,6 +37,8 @@ concurrency:
 
 jobs:
   build:
+    # The monthly keepalive tick skips the build/deploy entirely.
+    if: github.event.schedule != '0 12 1 * *'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -66,6 +72,20 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
+
+  # GitHub auto-disables SCHEDULED workflows after 60 days without a commit,
+  # even when every run succeeds (the code is finished; the crons are the
+  # point). Re-enabling the workflow via the API resets that clock, so each
+  # in-season cron run keeps the next one alive — no dummy commits.
+  keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/deploy.yml/enable"
+        env:
+          GH_TOKEN: ${{ github.token }}
 
   deploy:
     needs: build
